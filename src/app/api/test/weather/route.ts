@@ -70,7 +70,7 @@ export async function POST() {
         itemCount: items.length,
         totalCount: totalCount
       },
-      sampleData: items.slice(0, 3).map((item: any) => ({
+      sampleData: items.slice(0, 3).map((item: { category: string; fcstDate: string; fcstTime: string; fcstValue: string }) => ({
         category: item.category,
         fcstDate: item.fcstDate,
         fcstTime: item.fcstTime,

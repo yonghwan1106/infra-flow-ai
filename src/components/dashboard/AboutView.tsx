@@ -331,7 +331,7 @@ export default function AboutView() {
         </h2>
         <p className="text-lg text-slate-300 mb-6">
           도시의 혈관과 같은 빗물받이에 지능을 부여하여<br />
-          시민의 안전을 지키는 <strong className="text-blue-400">"도시 인프라의 디지털 주치의"</strong>
+          시민의 안전을 지키는 <strong className="text-blue-400">&quot;도시 인프라의 디지털 주치의&quot;</strong>
         </p>
         <div className="flex items-center justify-center space-x-4">
           <div className="flex items-center space-x-2 text-slate-400">

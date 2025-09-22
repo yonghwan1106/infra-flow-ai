@@ -1,18 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Settings,
   Save,
   RefreshCw,
   Bell,
-  Shield,
   Database,
   Monitor,
   Users,
-  Map,
   Cloud,
-  Zap,
   AlertTriangle,
   CheckCircle,
   Eye,
@@ -147,7 +144,7 @@ export default function SettingsView() {
 
       setSaveMessage('설정이 저장되었습니다.');
       setTimeout(() => setSaveMessage(''), 3000);
-    } catch (error) {
+    } catch {
       setSaveMessage('설정 저장에 실패했습니다.');
     } finally {
       setIsSaving(false);
@@ -177,7 +174,7 @@ export default function SettingsView() {
       } else {
         setApiTestResults(prev => ({ ...prev, [apiType]: 'error' }));
       }
-    } catch (error) {
+    } catch {
       setApiTestResults(prev => ({ ...prev, [apiType]: 'error' }));
     }
   };

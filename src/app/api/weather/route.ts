@@ -66,14 +66,14 @@ export async function GET(request: NextRequest) {
 
     // 현재 시간과 가장 가까운 예보 데이터 찾기
     const currentHour = now.getHours().toString().padStart(2, '0') + '00';
-    const currentItems = items.filter((item: any) =>
+    const currentItems = items.filter((item: { fcstDate: string; fcstTime: string; category: string; fcstValue: string }) =>
       item.fcstDate === baseDate && item.fcstTime >= currentHour
     );
 
     // 데이터 파싱
-    const weatherData: { [key: string]: any } = {};
+    const weatherData: { [key: string]: { date: string; time: string; temperature: number | null; humidity: number | null; rainfall: number | null; windSpeed: number | null; windDirection: number | null; skyCondition: number | null; precipitationType: number | null } } = {};
 
-    currentItems.forEach((item: any) => {
+    currentItems.forEach((item: { fcstDate: string; fcstTime: string; category: string; fcstValue: string }) => {
       const key = `${item.fcstDate}_${item.fcstTime}`;
       if (!weatherData[key]) {
         weatherData[key] = {
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
     };
 
     // 6시간 예보 데이터 생성
-    const forecast = weatherEntries.slice(1, 7).map((weather: any, index) => ({
+    const forecast = weatherEntries.slice(1, 7).map((weather: { temperature?: number; humidity?: number; rainfall?: number }, index) => ({
       time: new Date(Date.now() + (index + 1) * 3600000).toLocaleTimeString('ko-KR', {
         hour: '2-digit',
         minute: '2-digit'

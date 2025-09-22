@@ -19,7 +19,7 @@ import {
 
 export default function RealtimeView() {
   const { data, isConnected, error, reconnect } = useRealtime();
-  const [previousData, setPreviousData] = useState<any>(null);
+  const [previousData, setPreviousData] = useState<{ data: { criticalCount: number; warningCount: number; completedTasks: number } } | null>(null);
   const [trends, setTrends] = useState<{
     critical: 'up' | 'down' | 'same';
     warning: 'up' | 'down' | 'same';
@@ -43,7 +43,7 @@ export default function RealtimeView() {
     if (data?.data) {
       setPreviousData(data);
     }
-  }, [data]);
+  }, [data, previousData]);
 
   const getTrendIcon = (trend: 'up' | 'down' | 'same') => {
     switch (trend) {

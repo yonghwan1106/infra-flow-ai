@@ -53,7 +53,7 @@ export default function AlertsView({ sensorData }: AlertsViewProps) {
       const newAlerts: Alert[] = [];
 
       // 센서 기반 알림 생성
-      sensorData.forEach((sensor, index) => {
+      sensorData.forEach((sensor) => {
         if (sensor.status === 'critical') {
           newAlerts.push({
             id: `alert-critical-${sensor.id}`,

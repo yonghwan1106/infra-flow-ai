@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       } else {
         throw new Error('No JSON found in response');
       }
-    } catch (parseError) {
+    } catch {
       // JSON 파싱 실패 시 기본 응답 생성
       analysis = {
         riskScore: Math.min(100, (sensorData.waterLevel * 0.4 + sensorData.debrisLevel * 0.4 + (weatherData?.rainfall || 0) * 0.2)),

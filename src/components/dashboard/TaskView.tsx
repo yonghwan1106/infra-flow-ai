@@ -8,12 +8,10 @@ import {
   Navigation,
   Clock,
   CheckCircle,
-  AlertTriangle,
   MapPin,
   Camera,
   Play,
   Pause,
-  RotateCcw,
   Route
 } from 'lucide-react';
 
@@ -24,7 +22,7 @@ interface TaskViewProps {
 
 export default function TaskView({ tasks, sensorData }: TaskViewProps) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
-  const [selectedTask, setSelectedTask] = useState<MaintenanceTask | null>(null);
+  const [, setSelectedTask] = useState<MaintenanceTask | null>(null);
   const [isMobileView, setIsMobileView] = useState(false);
 
   // 팀별 작업 그룹화
@@ -177,7 +175,7 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
                 오늘의 작업 목록
               </h4>
 
-              {teamTasks['청소팀 3']?.slice(0, 5).map((task, index) => {
+              {teamTasks['청소팀 3']?.slice(0, 5).map((task) => {
                 const sensor = getSensorInfo(task.deviceId);
                 return (
                   <div key={task.id} className="bg-slate-700 rounded-lg p-4">

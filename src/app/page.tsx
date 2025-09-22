@@ -36,7 +36,7 @@ export default function Home() {
   const [tasks, setTasks] = useState<MaintenanceTask[]>([]);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<{ id: string; level: string; message: string; timestamp: Date; location: string }[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

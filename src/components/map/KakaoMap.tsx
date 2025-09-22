@@ -3,9 +3,26 @@
 import { useEffect, useRef } from 'react';
 import { SensorData } from '@/types';
 
+interface KakaoMap {
+  setCenter: (latlng: { getLat: () => number; getLng: () => number }) => void;
+  setLevel: (level: number) => void;
+}
+
+interface KakaoLatLng {
+  getLat: () => number;
+  getLng: () => number;
+}
+
 declare global {
   interface Window {
-    kakao: any;
+    kakao: {
+      maps: {
+        Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap;
+        LatLng: new (lat: number, lng: number) => KakaoLatLng;
+        Marker: new (options: { position: KakaoLatLng; map: KakaoMap }) => void;
+        load: (callback: () => void) => void;
+      };
+    };
   }
 }
 
@@ -16,8 +33,8 @@ interface KakaoMapProps {
 
 export default function KakaoMap({ sensorData, onMarkerClick }: KakaoMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<any>(null);
-  const markers = useRef<any[]>([]);
+  const map = useRef<KakaoMap | null>(null);
+  const markers = useRef<unknown[]>([]);
 
   // 강남구 중심 좌표
   const defaultCenter = { lat: 37.5172, lng: 127.0473 };

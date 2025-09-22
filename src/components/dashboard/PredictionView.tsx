@@ -7,7 +7,6 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle,
-  Clock,
   Zap,
   Lightbulb,
   ArrowRight
@@ -41,7 +40,7 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
     if (highRiskSensors.length > 0) {
       setSelectedSensor(highRiskSensors[0]);
     }
-  }, [sensorData]);
+  }, [highRiskSensors]);
 
   // AI 분석 요청
   const analyzeWithAI = async (sensor: SensorData) => {
@@ -92,9 +91,13 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
     }
   };
 
+  const handleAnalyzeWithAI = async (sensor: SensorData) => {
+    await analyzeWithAI(sensor);
+  };
+
   useEffect(() => {
     if (selectedSensor) {
-      analyzeWithAI(selectedSensor);
+      handleAnalyzeWithAI(selectedSensor);
     }
   }, [selectedSensor]);
 
@@ -162,7 +165,7 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
             우선 조치 필요
           </h3>
           <div className="space-y-2">
-            {highRiskSensors.slice(0, 3).map((sensor, index) => (
+            {highRiskSensors.slice(0, 3).map((sensor) => (
               <div key={sensor.id} className="flex justify-between text-sm">
                 <span className="text-slate-300 truncate">{sensor.location.name}</span>
                 <span className="text-red-400 font-semibold">{sensor.riskAnalysis.currentRisk}%</span>
