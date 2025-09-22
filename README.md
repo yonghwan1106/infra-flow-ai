@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Infra Flow AI
+
+A Next.js infrastructure monitoring dashboard for storm drain management with AI-powered analysis.
+
+## Features
+
+- 🌊 **Real-time Infrastructure Monitoring**: Track water levels, debris, and flow rates across storm drains
+- 🤖 **AI-Powered Risk Analysis**: Predictive analysis using Anthropic Claude for maintenance optimization
+- 🗺️ **Interactive Map Visualization**: Kakao Maps integration for location-based monitoring
+- ⚡ **Real-time Alerts**: Automated alert system for critical infrastructure conditions
+- 📊 **Predictive Analytics**: Weather integration for proactive maintenance planning
+- 🔧 **Task Management**: Optimized maintenance scheduling and route planning
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS 4
+- **AI Integration**: Anthropic Claude SDK
+- **Maps**: Kakao Maps API
+- **Charts**: Recharts
+- **Icons**: Lucide React
+- **Build Tool**: Turbopack
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- API keys for required services
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yonghwan1106/infra-flow-ai.git
+   cd infra-flow-ai
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Fill in your API keys:
+   - `ANTHROPIC_API_KEY`: Your Anthropic API key for AI analysis
+   - `NEXT_PUBLIC_KAKAO_MAP_API_KEY`: Kakao Maps API key
+   - `WEATHER_API_KEY`: Weather service API key
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard:
+   - `ANTHROPIC_API_KEY`
+   - `NEXT_PUBLIC_KAKAO_MAP_API_KEY`
+   - `WEATHER_API_KEY`
+   - `NEXT_PUBLIC_APP_URL` (your Vercel domain)
+3. Deploy automatically on push to main branch
+
+### Manual Build
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Keys Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Anthropic API Key
+1. Sign up at [console.anthropic.com](https://console.anthropic.com)
+2. Create an API key
+3. Add to environment variables as `ANTHROPIC_API_KEY`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Kakao Maps API Key
+1. Register at [developers.kakao.com](https://developers.kakao.com)
+2. Create an app and get JavaScript key
+3. Add to environment variables as `NEXT_PUBLIC_KAKAO_MAP_API_KEY`
 
-## Learn More
+### Weather API Key
+1. Sign up at [OpenWeatherMap](https://openweathermap.org/api) or similar service
+2. Get API key
+3. Add to environment variables as `WEATHER_API_KEY`
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── api/            # API routes
+│   ├── globals.css     # Global styles
+│   ├── layout.tsx      # Root layout
+│   └── page.tsx        # Main dashboard
+├── components/         # React components
+│   ├── dashboard/      # Dashboard views
+│   ├── layout/         # Layout components
+│   └── map/           # Map components
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions
+└── types/             # TypeScript definitions
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -am 'Add new feature'`
+4. Push to branch: `git push origin feature/new-feature`
+5. Submit a pull request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built with [Next.js](https://nextjs.org)
+- AI powered by [Anthropic Claude](https://anthropic.com)
+- Maps by [Kakao Maps](https://apis.map.kakao.com)
+- Icons by [Lucide](https://lucide.dev)
