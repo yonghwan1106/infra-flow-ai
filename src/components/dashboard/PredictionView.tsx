@@ -31,10 +31,10 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // 위험도가 높은 센서들 필터링
-  const highRiskSensors = sensorData
-    .filter(sensor => sensor.riskAnalysis.currentRisk >= 60)
-    .slice(0, 10);
+  // 위험도가 높은 센서들 필터링 (위험도 순으로 정렬)
+  const highRiskSensors = [...sensorData]
+    .sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk)
+    .slice(0, 20);
 
   useEffect(() => {
     if (highRiskSensors.length > 0) {
