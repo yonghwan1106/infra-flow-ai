@@ -42,9 +42,12 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
 
+    let currentWeather: WeatherData | null = null;
+
     // 초기 데이터 생성
     const initializeData = async () => {
       const weatherData = await generateWeatherData();
+      currentWeather = weatherData;
       const sensors = generateSensorData(1247, weatherData.rainfall);
       const maintenanceTasks = generateMaintenanceTasks(sensors);
       const dashboardStats = generateDashboardStats(sensors, maintenanceTasks);
@@ -60,9 +63,9 @@ export default function Home() {
     initializeData();
 
     // 실시간 업데이트 시뮬레이션 (5초마다)
-    const interval = setInterval(async () => {
-      // 날씨 데이터는 5초마다 업데이트하지 않고 현재 weather 상태 사용
-      const currentRainfall = weather?.rainfall || 0;
+    const interval = setInterval(() => {
+      // 로컬 변수의 날씨 데이터 사용 (state 의존성 제거)
+      const currentRainfall = currentWeather?.rainfall || 0;
       const updatedSensors = generateSensorData(1247, currentRainfall);
       const updatedTasks = generateMaintenanceTasks(updatedSensors);
       const updatedStats = generateDashboardStats(updatedSensors, updatedTasks);
@@ -75,7 +78,7 @@ export default function Home() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [weather]);
+  }, []); // 의존성 배열 비움 - 한 번만 실행
 
   // 컨텐츠 렌더링 함수
   const renderContent = () => {
