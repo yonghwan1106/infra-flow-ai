@@ -40,9 +40,6 @@ export default function Header() {
               <div className="w-2 h-2 bg-green-400 rounded-full status-indicator"></div>
               <span className="text-slate-300">시스템 정상</span>
             </div>
-            <div className="text-slate-400">
-              마지막 업데이트: {mounted ? currentTime : '--:--:--'}
-            </div>
           </div>
 
           <div className="flex items-center space-x-2">
