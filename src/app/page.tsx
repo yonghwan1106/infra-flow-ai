@@ -44,9 +44,9 @@ export default function Home() {
 
     // 초기 데이터 생성
     const initializeData = async () => {
-      const sensors = generateSensorData(1247);
-      const maintenanceTasks = generateMaintenanceTasks(sensors);
       const weatherData = await generateWeatherData();
+      const sensors = generateSensorData(1247, weatherData.rainfall);
+      const maintenanceTasks = generateMaintenanceTasks(sensors);
       const dashboardStats = generateDashboardStats(sensors, maintenanceTasks);
       const alertData = generateAlerts(sensors);
 
@@ -61,7 +61,9 @@ export default function Home() {
 
     // 실시간 업데이트 시뮬레이션 (5초마다)
     const interval = setInterval(async () => {
-      const updatedSensors = generateSensorData(1247);
+      // 날씨 데이터는 5초마다 업데이트하지 않고 현재 weather 상태 사용
+      const currentRainfall = weather?.rainfall || 0;
+      const updatedSensors = generateSensorData(1247, currentRainfall);
       const updatedTasks = generateMaintenanceTasks(updatedSensors);
       const updatedStats = generateDashboardStats(updatedSensors, updatedTasks);
       const updatedAlerts = generateAlerts(updatedSensors);
@@ -73,7 +75,7 @@ export default function Home() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [weather]);
 
   // 컨텐츠 렌더링 함수
   const renderContent = () => {

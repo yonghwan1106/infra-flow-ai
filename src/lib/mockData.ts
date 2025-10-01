@@ -1,84 +1,9 @@
 import { SensorData, MaintenanceTask, WeatherData, DashboardStats } from '@/types';
+import { generateAdvancedSensorData } from './advancedSimulator';
 
-// 강남구 주요 위치 좌표
-const gangnamLocations = [
-  { name: '강남역 2번 출구', lat: 37.4979, lng: 127.0276, district: '강남구' },
-  { name: '역삼역 1번 출구', lat: 37.5000, lng: 127.0364, district: '강남구' },
-  { name: '선릉역 3번 출구', lat: 37.5044, lng: 127.0492, district: '강남구' },
-  { name: '테헤란로 123번지', lat: 37.4996, lng: 127.0317, district: '강남구' },
-  { name: '삼성역 2번 출구', lat: 37.5091, lng: 127.0627, district: '강남구' },
-  { name: '봉은사로 456번지', lat: 37.5105, lng: 127.0591, district: '강남구' },
-  { name: '논현로 789번지', lat: 37.5109, lng: 127.0227, district: '강남구' },
-  { name: '압구정로 321번지', lat: 37.5274, lng: 127.0286, district: '강남구' },
-  { name: '신사역 4번 출구', lat: 37.5160, lng: 127.0202, district: '강남구' },
-  { name: '청담동 카페거리', lat: 37.5196, lng: 127.0408, district: '강남구' },
-];
-
-// 현실적인 센서 데이터 생성
-export function generateSensorData(count: number = 50): SensorData[] {
-  const sensors: SensorData[] = [];
-
-  for (let i = 0; i < count; i++) {
-    const location = gangnamLocations[Math.floor(Math.random() * gangnamLocations.length)];
-    const baseWaterLevel = Math.random() * 100;
-    const baseDebrisLevel = Math.random() * 100;
-
-    // 위험도 계산 (수위 + 쓰레기량 + 날씨 요인)
-    const weatherFactor = Math.random() * 20; // 기상 영향
-    const currentRisk = Math.min(100, (baseWaterLevel * 0.4 + baseDebrisLevel * 0.4 + weatherFactor * 0.2));
-
-    // 예측 위험도 (현재 + 변화량)
-    const predictedRisk = Math.min(100, currentRisk + (Math.random() - 0.5) * 30);
-
-    // 상태 결정
-    let status: 'normal' | 'warning' | 'critical';
-    if (currentRisk >= 80) status = 'critical';
-    else if (currentRisk >= 50) status = 'warning';
-    else status = 'normal';
-
-    // 위험 요인 생성
-    const factors = [];
-    if (baseWaterLevel > 70) factors.push('높은 수위');
-    if (baseDebrisLevel > 60) factors.push('쓰레기 축적');
-    if (weatherFactor > 15) factors.push('집중강우 예보');
-    if (factors.length === 0) factors.push('정상 범위');
-
-    // AI 권장사항 생성
-    let recommendation = '';
-    if (status === 'critical') {
-      recommendation = '즉시 청소 및 점검 필요. 긴급 대응팀 파견 권장.';
-    } else if (status === 'warning') {
-      recommendation = '2시간 내 청소 작업 권장. 상황 모니터링 필요.';
-    } else {
-      recommendation = '정상 상태. 정기 점검 일정에 따라 관리.';
-    }
-
-    sensors.push({
-      id: `sensor-${String(i + 1).padStart(3, '0')}`,
-      deviceId: `INF-GN-${String(i + 1).padStart(3, '0')}`,
-      location: {
-        ...location,
-        lat: location.lat + (Math.random() - 0.5) * 0.01, // 위치에 약간의 변화 추가
-        lng: location.lng + (Math.random() - 0.5) * 0.01,
-      },
-      measurements: {
-        waterLevel: Math.round(baseWaterLevel),
-        debrisLevel: Math.round(baseDebrisLevel),
-        flowRate: Math.round(Math.random() * 500 + 100), // 100-600 L/min
-        temperature: Math.round(Math.random() * 10 + 15), // 15-25°C
-      },
-      riskAnalysis: {
-        currentRisk: Math.round(currentRisk),
-        predictedRisk: Math.round(predictedRisk),
-        factors,
-        recommendation,
-      },
-      timestamp: new Date(),
-      status,
-    });
-  }
-
-  return sensors.sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk);
+// 현실적인 센서 데이터 생성 (고급 시뮬레이터 사용)
+export function generateSensorData(count: number = 50, rainfall: number = 0): SensorData[] {
+  return generateAdvancedSensorData(count, rainfall);
 }
 
 // 작업 관리 데이터 생성

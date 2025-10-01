@@ -17,13 +17,21 @@ export async function GET(request: NextRequest) {
       // 클라이언트 연결 확인 메시지
       controller.enqueue(`data: ${JSON.stringify({ type: 'connected', message: '실시간 연결됨' })}\n\n`);
 
+      // 초기 날씨 데이터 (비동기로 가져오기)
+      let currentWeather: Awaited<ReturnType<typeof generateWeatherData>>;
+      generateWeatherData().then(w => { currentWeather = w; });
+
       // 주기적으로 데이터 전송 (3초마다)
-      const interval = setInterval(() => {
+      const interval = setInterval(async () => {
         try {
-          // 새로운 센서 데이터 생성
-          const sensorData = generateSensorData(1247);
+          // 날씨 데이터가 아직 없으면 기다림
+          if (!currentWeather) {
+            currentWeather = await generateWeatherData();
+          }
+
+          // 새로운 센서 데이터 생성 (날씨 연동)
+          const sensorData = generateSensorData(1247, currentWeather.rainfall);
           const tasks = generateMaintenanceTasks(sensorData);
-          const weather = generateWeatherData();
           const alerts = generateAlerts(sensorData);
 
           // 주요 상태 변화만 전송 (성능 최적화)
@@ -40,9 +48,9 @@ export async function GET(request: NextRequest) {
               completedTasks: tasks.filter(t => t.status === 'completed').length,
               totalTasks: tasks.length,
               weather: {
-                temperature: weather.temperature,
-                rainfall: weather.rainfall,
-                humidity: weather.humidity,
+                temperature: currentWeather.temperature,
+                rainfall: currentWeather.rainfall,
+                humidity: currentWeather.humidity,
               },
               alerts: recentAlerts,
               criticalSensors: criticalSensors.slice(0, 5).map(sensor => ({

@@ -1,6 +1,10 @@
-# Infra Flow AI
+# 🌊 Infra-Flow AI
 
-A Next.js infrastructure monitoring dashboard for storm drain management with AI-powered analysis.
+> **2025년 대한민국 물산업 혁신 창업대전 출품작**
+>
+> AI 기반 빗물받이 실시간 모니터링 및 예측 시스템
+
+빗물받이 막힘으로 인한 도심 침수를 예방하고, AI 분석을 통해 효율적인 유지보수를 지원하는 차세대 인프라 관리 시스템입니다.
 
 ## Features
 
@@ -44,13 +48,13 @@ A Next.js infrastructure monitoring dashboard for storm drain management with AI
 
 3. Set up environment variables:
    ```bash
-   cp .env.example .env.local
+   cp .env.local.example .env.local
    ```
 
-   Fill in your API keys:
-   - `ANTHROPIC_API_KEY`: Your Anthropic API key for AI analysis
-   - `NEXT_PUBLIC_KAKAO_MAP_API_KEY`: Kakao Maps API key
-   - `WEATHER_API_KEY`: Weather service API key
+   Fill in your API keys (자세한 내용은 [SETUP.md](./SETUP.md) 참고):
+   - `ANTHROPIC_API_KEY`: Claude AI API key ([발급 방법](./SETUP.md#1-claude-ai-api-anthropic))
+   - `NEXT_PUBLIC_KAKAO_MAP_API_KEY`: Kakao Maps API key ([발급 방법](./SETUP.md#2-카카오맵-api))
+   - `WEATHER_API_KEY`: 기상청 API key (선택) ([발급 방법](./SETUP.md#3-기상청-api-선택))
 
 4. Run the development server:
    ```bash

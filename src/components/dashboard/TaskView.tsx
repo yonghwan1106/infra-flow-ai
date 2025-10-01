@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MaintenanceTask, SensorData } from '@/types';
+import { optimizeTeamRoutes, OptimizedRoute } from '@/lib/routeOptimizer';
 import {
   Users,
   ClipboardList,
@@ -12,7 +13,10 @@ import {
   Camera,
   Play,
   Pause,
-  Route
+  Route,
+  TrendingDown,
+  DollarSign,
+  Zap
 } from 'lucide-react';
 
 interface TaskViewProps {
@@ -24,6 +28,16 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [, setSelectedTask] = useState<MaintenanceTask | null>(null);
   const [isMobileView, setIsMobileView] = useState(false);
+  const [optimizedRoutes, setOptimizedRoutes] = useState<Map<string, OptimizedRoute>>(new Map());
+  const [showRouteOptimization, setShowRouteOptimization] = useState(false);
+
+  // 경로 최적화 실행
+  useEffect(() => {
+    if (tasks.length > 0 && sensorData.length > 0) {
+      const routes = optimizeTeamRoutes(tasks, sensorData);
+      setOptimizedRoutes(routes);
+    }
+  }, [tasks, sensorData]);
 
   // 팀별 작업 그룹화
   const teamTasks = tasks.reduce((acc, task) => {
@@ -100,6 +114,147 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
           </div>
         </div>
       </div>
+
+      {/* 경로 최적화 토글 버튼 */}
+      <div className="control-panel rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Zap className="h-5 w-5 text-yellow-400" />
+            <div>
+              <h3 className="text-white font-semibold">AI 경로 최적화</h3>
+              <p className="text-sm text-slate-400">TSP 알고리즘 기반 자동 경로 생성</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowRouteOptimization(!showRouteOptimization)}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              showRouteOptimization
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+            }`}
+          >
+            {showRouteOptimization ? '숨기기' : '최적화 보기'}
+          </button>
+        </div>
+      </div>
+
+      {/* 경로 최적화 결과 */}
+      {showRouteOptimization && selectedTeam && optimizedRoutes.has(selectedTeam) && (
+        <div className="control-panel rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Route className="h-5 w-5 mr-2 text-blue-400" />
+            {selectedTeam} 최적화 경로
+          </h3>
+
+          {(() => {
+            const route = optimizedRoutes.get(selectedTeam)!;
+            return (
+              <div className="space-y-4">
+                {/* 절감 효과 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-400 text-sm">거리 절감</span>
+                      <TrendingDown className="h-4 w-4 text-green-400" />
+                    </div>
+                    <p className="text-2xl font-bold text-green-400">
+                      {route.savings.distanceReduction.toFixed(1)}%
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {route.totalDistance}km (최적화 후)
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-400 text-sm">시간 절감</span>
+                      <Clock className="h-4 w-4 text-blue-400" />
+                    </div>
+                    <p className="text-2xl font-bold text-blue-400">
+                      {route.savings.timeReduction}분
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      총 {Math.floor(route.totalTime / 60)}시간 {route.totalTime % 60}분
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-400 text-sm">연료비 절감</span>
+                      <DollarSign className="h-4 w-4 text-yellow-400" />
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-400">
+                      {route.savings.fuelSavings}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">예상 절감액</p>
+                  </div>
+                </div>
+
+                {/* 최적화된 경로 순서 */}
+                <div>
+                  <h4 className="text-white font-medium mb-3">최적 작업 순서</h4>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {route.path.map((step, index) => (
+                      <div
+                        key={step.taskId}
+                        className="bg-slate-800 rounded-lg p-3 flex items-center space-x-4"
+                      >
+                        {/* 순서 번호 */}
+                        <div className="flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">{step.order}</span>
+                          </div>
+                        </div>
+
+                        {/* 위치 정보 */}
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <MapPin className="h-4 w-4 text-slate-400" />
+                            <span className="text-white font-medium">{step.location}</span>
+                          </div>
+                          <div className="flex items-center space-x-4 text-xs text-slate-400">
+                            <span>도착: {step.arrivalTime}</span>
+                            <span>•</span>
+                            <span>작업: {step.duration}분</span>
+                            {step.distanceFromPrevious > 0 && (
+                              <>
+                                <span>•</span>
+                                <span>이동: {step.distanceFromPrevious}km</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 연결선 (마지막 제외) */}
+                        {index < route.path.length - 1 && (
+                          <div className="flex-shrink-0">
+                            <div className="text-slate-600">→</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 최적화 정보 */}
+                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                  <div className="flex items-start space-x-3">
+                    <Zap className="h-5 w-5 text-blue-400 mt-0.5" />
+                    <div>
+                      <h5 className="text-white font-medium mb-1">최적화 알고리즘</h5>
+                      <p className="text-sm text-slate-300">
+                        <strong>TSP (Traveling Salesman Problem)</strong> 기반 경로 최적화를 적용했습니다.
+                        Nearest Neighbor + 2-opt 알고리즘으로 최단 거리를 계산하고,
+                        긴급 작업은 우선적으로 배치하여 위험도를 최소화합니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
 
       {/* 전체 통계 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -246,23 +401,36 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
             <div className="p-4 border-t border-slate-700">
               <h4 className="text-white font-semibold mb-3 flex items-center">
                 <Route className="h-4 w-4 mr-2" />
-                최적 경로 안내
+                AI 최적 경로 안내
               </h4>
-              <div className="bg-slate-700 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-300">예상 소요시간</span>
-                  <span className="text-white font-semibold">2시간 15분</span>
-                </div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-300">총 이동거리</span>
-                  <span className="text-white font-semibold">8.3km</span>
-                </div>
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium flex items-center justify-center mt-3">
-                  <Navigation className="h-3 w-3 mr-1" />
-                  길안내 시작
-                </button>
-              </div>
-            </div>
+              {optimizedRoutes.has('청소팀 3') && (
+                <>
+                  <div className="bg-slate-700 rounded-lg p-3 mb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-300">예상 소요시간</span>
+                      <span className="text-white font-semibold">
+                        {Math.floor(optimizedRoutes.get('청소팀 3')!.totalTime / 60)}시간 {optimizedRoutes.get('청소팀 3')!.totalTime % 60}분
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-300">총 이동거리</span>
+                      <span className="text-white font-semibold">
+                        {optimizedRoutes.get('청소팀 3')!.totalDistance}km
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">연료비 절감</span>
+                      <span className="text-green-400 font-semibold">
+                        {optimizedRoutes.get('청소팀 3')!.savings.fuelSavings}
+                      </span>
+                    </div>
+                  </div>
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium flex items-center justify-center">
+                    <Navigation className="h-3 w-3 mr-1" />
+                    길안내 시작
+                  </button>
+                </>
+              )}</div>
 
             {/* 작업 완료 인증 */}
             <div className="p-4 border-t border-slate-700">
