@@ -38,6 +38,7 @@ export default function Home() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [alerts, setAlerts] = useState<{ id: string; level: string; message: string; timestamp: Date; location: string }[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
   useEffect(() => {
     setMounted(true);
@@ -75,6 +76,7 @@ export default function Home() {
       setTasks(updatedTasks);
       setStats(updatedStats);
       setAlerts(updatedAlerts);
+      setLastUpdate(new Date());
     }, 5000);
 
     return () => clearInterval(interval);
@@ -111,8 +113,13 @@ export default function Home() {
         {/* 페이지 헤더 */}
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold text-white">실시간 관제 대시보드</h2>
-          <div className="text-sm text-slate-400">
-            마지막 업데이트: {mounted ? new Date().toLocaleTimeString('ko-KR') : '--:--:--'}
+          <div className="flex items-center space-x-4">
+            <div className="text-sm text-slate-400">
+              업데이트 주기: 5초
+            </div>
+            <div className="text-sm text-slate-400">
+              마지막 업데이트: {mounted ? lastUpdate.toLocaleTimeString('ko-KR') : '--:--:--'}
+            </div>
           </div>
         </div>
 
