@@ -28,7 +28,7 @@ interface TaskViewProps {
 
 export default function TaskView({ tasks, sensorData }: TaskViewProps) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
-  const [, setSelectedTask] = useState<MaintenanceTask | null>(null);
+  const [selectedTask, setSelectedTask] = useState<MaintenanceTask | null>(null);
   const [isMobileView, setIsMobileView] = useState(false);
   const [optimizedRoutes, setOptimizedRoutes] = useState<Map<string, OptimizedRoute>>(new Map());
   const [showRouteOptimization, setShowRouteOptimization] = useState(false);

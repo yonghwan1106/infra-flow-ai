@@ -99,10 +99,11 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
     .slice(0, 20);
 
   useEffect(() => {
-    if (highRiskSensors.length > 0) {
+    if (highRiskSensors.length > 0 && !selectedSensor) {
       setSelectedSensor(highRiskSensors[0]);
     }
-  }, [highRiskSensors]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [highRiskSensors.length]);
 
   // AI 분석 요청
   const analyzeWithAI = async (sensor: SensorData) => {
@@ -153,14 +154,11 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
     }
   };
 
-  const handleAnalyzeWithAI = async (sensor: SensorData) => {
-    await analyzeWithAI(sensor);
-  };
-
   useEffect(() => {
     if (selectedSensor) {
-      handleAnalyzeWithAI(selectedSensor);
+      analyzeWithAI(selectedSensor);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSensor]);
 
   const getUrgencyColor = (urgency: string) => {
