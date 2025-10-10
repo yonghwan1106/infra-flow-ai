@@ -18,7 +18,7 @@ import {
   TrendingDown,
   DollarSign,
   Zap,
-  Map
+  Map as MapIcon
 } from 'lucide-react';
 
 // Dynamic import to prevent SSR issues with Kakao Maps
@@ -161,7 +161,7 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
                   : 'bg-slate-700 text-slate-500 cursor-not-allowed'
               }`}
             >
-              <Map className="h-4 w-4" />
+              <MapIcon className="h-4 w-4" />
               <span>지도에서 보기</span>
             </button>
             <button
