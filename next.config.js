@@ -6,6 +6,15 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/presentation',
+        destination: '/presentation/index.html',
+        permanent: true,
+      },
+    ];
+  },
   experimental: {
     turbo: {
       rules: {
