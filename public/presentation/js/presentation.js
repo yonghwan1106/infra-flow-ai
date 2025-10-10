@@ -20,8 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', handleKeyPress);
 
     // 버튼 이벤트
+    document.getElementById('first-btn').addEventListener('click', () => goToSlide(0));
     document.getElementById('prev-btn').addEventListener('click', prevSlide);
     document.getElementById('next-btn').addEventListener('click', nextSlide);
+    document.getElementById('last-btn').addEventListener('click', () => goToSlide(totalSlides - 1));
 
     // 화면 클릭으로 다음 슬라이드
     document.querySelector('.presentation').addEventListener('click', (e) => {
@@ -75,8 +77,10 @@ function showSlide(index) {
     document.querySelector('.progress-fill').style.width = progress + '%';
 
     // 버튼 상태 업데이트
+    document.getElementById('first-btn').disabled = (index === 0);
     document.getElementById('prev-btn').disabled = (index === 0);
     document.getElementById('next-btn').disabled = (index === totalSlides - 1);
+    document.getElementById('last-btn').disabled = (index === totalSlides - 1);
 
     // 애니메이션 트리거
     triggerAnimations();

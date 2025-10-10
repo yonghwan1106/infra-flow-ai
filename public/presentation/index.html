@@ -73,12 +73,12 @@
                     <div class="image-compare fade-in-delay-2">
                         <div class="compare-image">
                             <div class="compare-label">막힌 빗물받이</div>
-                            <div class="placeholder-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            <div class="placeholder-img" style="background-image: url('/presentation/images/001.PNG'); background-size: cover; background-position: center;"></div>
                         </div>
                         <div class="compare-arrow">→</div>
                         <div class="compare-image">
                             <div class="compare-label">침수된 도로</div>
-                            <div class="placeholder-img" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                            <div class="placeholder-img" style="background-image: url('/presentation/images/002.PNG'); background-size: cover; background-position: center;"></div>
                         </div>
                     </div>
                 </div>
@@ -650,9 +650,11 @@
 
     <!-- 내비게이션 컨트롤 -->
     <div class="nav-controls">
-        <button class="nav-btn" id="prev-btn">◀</button>
+        <button class="nav-btn" id="first-btn" title="맨 앞으로">⏮</button>
+        <button class="nav-btn" id="prev-btn" title="이전 슬라이드">◀</button>
         <span class="slide-counter"><span id="current-slide">1</span> / <span id="total-slides">17</span></span>
-        <button class="nav-btn" id="next-btn">▶</button>
+        <button class="nav-btn" id="next-btn" title="다음 슬라이드">▶</button>
+        <button class="nav-btn" id="last-btn" title="맨 뒤로">⏭</button>
     </div>
 
     <script src="/presentation/js/presentation.js"></script>
