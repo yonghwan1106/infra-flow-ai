@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { SensorData } from '@/types';
+import { OptimizedRoute } from '@/lib/routeOptimizer';
 
 interface KakaoMap {
   setCenter: (latlng: { getLat: () => number; getLng: () => number }) => void;
@@ -19,7 +20,16 @@ declare global {
       maps: {
         Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap;
         LatLng: new (lat: number, lng: number) => KakaoLatLng;
-        Marker: new (options: { position: KakaoLatLng; map: KakaoMap }) => void;
+        Marker: new (options: { position: KakaoLatLng; map: KakaoMap; image?: unknown; title?: string }) => unknown;
+        Polyline: new (options: { path: KakaoLatLng[]; strokeWeight: number; strokeColor: string; strokeOpacity: number; strokeStyle: string }) => unknown;
+        CustomOverlay: new (options: { position: KakaoLatLng; content: string; xAnchor?: number; yAnchor?: number }) => unknown;
+        MarkerImage: new (src: string, size: unknown, options?: unknown) => unknown;
+        Size: new (width: number, height: number) => unknown;
+        Point: new (x: number, y: number) => unknown;
+        InfoWindow: new (options: { content: string; removable?: boolean }) => unknown;
+        event: {
+          addListener: (target: unknown, type: string, callback: () => void) => void;
+        };
         load: (callback: () => void) => void;
       };
     };
@@ -29,12 +39,15 @@ declare global {
 interface KakaoMapProps {
   sensorData: SensorData[];
   onMarkerClick?: (sensor: SensorData) => void;
+  optimizedRoute?: OptimizedRoute | null;
+  showRoute?: boolean;
 }
 
-export default function KakaoMap({ sensorData, onMarkerClick }: KakaoMapProps) {
+export default function KakaoMap({ sensorData, onMarkerClick, optimizedRoute, showRoute }: KakaoMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<KakaoMap | null>(null);
   const markers = useRef<unknown[]>([]);
+  const routeOverlays = useRef<unknown[]>([]);
 
   // 강남구 중심 좌표
   const defaultCenter = { lat: 37.5172, lng: 127.0473 };
@@ -95,6 +108,82 @@ export default function KakaoMap({ sensorData, onMarkerClick }: KakaoMapProps) {
       markers.current.push(marker);
     });
   }, [sensorData, onMarkerClick]);
+
+  // 경로 시각화
+  useEffect(() => {
+    if (!window.kakao || !map.current || !showRoute || !optimizedRoute) {
+      // 경로 숨기기
+      routeOverlays.current.forEach((overlay: any) => overlay.setMap(null));
+      routeOverlays.current = [];
+      return;
+    }
+
+    // 기존 경로 오버레이 제거
+    routeOverlays.current.forEach((overlay: any) => overlay.setMap(null));
+    routeOverlays.current = [];
+
+    // 경로가 없으면 리턴
+    if (!optimizedRoute.path || optimizedRoute.path.length === 0) return;
+
+    // 경로 선 그리기
+    const linePath: KakaoLatLng[] = [];
+    optimizedRoute.path.forEach((step) => {
+      const position = new window.kakao.maps.LatLng(
+        step.coordinates.lat,
+        step.coordinates.lng
+      );
+      linePath.push(position);
+    });
+
+    // Polyline 생성
+    const polyline = new window.kakao.maps.Polyline({
+      path: linePath,
+      strokeWeight: 4,
+      strokeColor: '#3b82f6',
+      strokeOpacity: 0.8,
+      strokeStyle: 'solid'
+    });
+
+    (polyline as any).setMap(map.current);
+    routeOverlays.current.push(polyline);
+
+    // 순서 번호 오버레이 추가
+    optimizedRoute.path.forEach((step) => {
+      const position = new window.kakao.maps.LatLng(
+        step.coordinates.lat,
+        step.coordinates.lng
+      );
+
+      const content = `
+        <div style="
+          background: #3b82f6;
+          color: white;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-center;
+          font-weight: bold;
+          font-size: 14px;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        ">
+          ${step.order}
+        </div>
+      `;
+
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position,
+        content,
+        xAnchor: 0.5,
+        yAnchor: 0.5
+      });
+
+      (customOverlay as any).setMap(map.current);
+      routeOverlays.current.push(customOverlay);
+    });
+  }, [optimizedRoute, showRoute]);
 
   // 카카오 지도 스크립트 로드
   useEffect(() => {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { MaintenanceTask, SensorData } from '@/types';
 import { optimizeTeamRoutes, OptimizedRoute } from '@/lib/routeOptimizer';
+import RouteMapView from './RouteMapView';
 import {
   Users,
   ClipboardList,
@@ -16,7 +17,8 @@ import {
   Route,
   TrendingDown,
   DollarSign,
-  Zap
+  Zap,
+  Map
 } from 'lucide-react';
 
 interface TaskViewProps {
@@ -30,6 +32,7 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
   const [isMobileView, setIsMobileView] = useState(false);
   const [optimizedRoutes, setOptimizedRoutes] = useState<Map<string, OptimizedRoute>>(new Map());
   const [showRouteOptimization, setShowRouteOptimization] = useState(false);
+  const [showRouteMap, setShowRouteMap] = useState(false);
 
   // 경로 최적화 실행
   useEffect(() => {
@@ -91,7 +94,18 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      {/* 경로 지도 모달 */}
+      {showRouteMap && selectedTeam && optimizedRoutes.has(selectedTeam) && (
+        <RouteMapView
+          sensorData={sensorData}
+          selectedTeam={selectedTeam}
+          optimizedRoute={optimizedRoutes.get(selectedTeam)!}
+          onClose={() => setShowRouteMap(false)}
+        />
+      )}
+
+      <div className="space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-white flex items-center">
@@ -125,16 +139,34 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
               <p className="text-sm text-slate-400">TSP 알고리즘 기반 자동 경로 생성</p>
             </div>
           </div>
-          <button
-            onClick={() => setShowRouteOptimization(!showRouteOptimization)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              showRouteOptimization
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-            }`}
-          >
-            {showRouteOptimization ? '숨기기' : '최적화 보기'}
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => {
+                if (selectedTeam && optimizedRoutes.has(selectedTeam)) {
+                  setShowRouteMap(true);
+                }
+              }}
+              disabled={!selectedTeam || !optimizedRoutes.has(selectedTeam)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2 ${
+                selectedTeam && optimizedRoutes.has(selectedTeam)
+                  ? 'bg-green-600 text-white hover:bg-green-700'
+                  : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+              }`}
+            >
+              <Map className="h-4 w-4" />
+              <span>지도에서 보기</span>
+            </button>
+            <button
+              onClick={() => setShowRouteOptimization(!showRouteOptimization)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                showRouteOptimization
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              {showRouteOptimization ? '숨기기' : '최적화 보기'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -576,6 +608,7 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

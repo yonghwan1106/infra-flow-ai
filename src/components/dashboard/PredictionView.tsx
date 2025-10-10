@@ -3,13 +3,26 @@
 import { useState, useEffect } from 'react';
 import { SensorData, WeatherData } from '@/types';
 import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Area,
+  AreaChart
+} from 'recharts';
+import {
   Brain,
   TrendingUp,
   AlertCircle,
   CheckCircle,
   Zap,
   Lightbulb,
-  ArrowRight
+  ArrowRight,
+  Clock
 } from 'lucide-react';
 
 interface PredictionViewProps {
@@ -30,6 +43,55 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
   const [selectedSensor, setSelectedSensor] = useState<SensorData | null>(null);
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // 6시간 예측 데이터 생성
+  const generatePredictionData = (sensor: SensorData) => {
+    const data = [];
+    const currentTime = new Date();
+    const currentRisk = sensor.riskAnalysis.currentRisk;
+    const predictedRisk = sensor.riskAnalysis.predictedRisk;
+
+    // 현재 시점
+    data.push({
+      time: currentTime.getHours() + ':00',
+      actual: currentRisk,
+      predicted: currentRisk,
+      rainfall: weatherData.rainfall
+    });
+
+    // 6시간 예측 (1시간 단위)
+    for (let i = 1; i <= 6; i++) {
+      const futureTime = new Date(currentTime.getTime() + i * 60 * 60 * 1000);
+      const hour = futureTime.getHours();
+
+      // 선형 보간 + 약간의 변동성
+      const progress = i / 6;
+      const interpolated = currentRisk + (predictedRisk - currentRisk) * progress;
+
+      // 시간대별 패턴 반영 (출퇴근 시간 증가)
+      let timeMultiplier = 1.0;
+      if ((hour >= 7 && hour <= 9) || (hour >= 18 && hour <= 20)) {
+        timeMultiplier = 1.15;
+      }
+
+      // 날씨 영향
+      const weatherMultiplier = 1 + (weatherData.rainfall / 100) * 0.3;
+
+      const predictedValue = Math.min(100, interpolated * timeMultiplier * weatherMultiplier);
+
+      // 강수량 예측 (시간이 지날수록 감소)
+      const predictedRainfall = Math.max(0, weatherData.rainfall * (1 - i * 0.1));
+
+      data.push({
+        time: hour + ':00',
+        actual: null, // 미래는 실제값 없음
+        predicted: Math.round(predictedValue),
+        rainfall: Math.round(predictedRainfall)
+      });
+    }
+
+    return data;
+  };
 
   // 위험도가 높은 센서들 필터링 (위험도 순으로 정렬)
   const highRiskSensors = [...sensorData]
@@ -284,6 +346,83 @@ export default function PredictionView({ sensorData, weatherData }: PredictionVi
                           <span className={analysis.predictedRisk > analysis.riskScore ? 'text-red-400' : 'text-green-400'}>
                             {Math.abs(analysis.predictedRisk - analysis.riskScore)}%
                           </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 6시간 예측 그래프 */}
+                  <div>
+                    <h4 className="text-white font-medium mb-3 flex items-center">
+                      <Clock className="h-4 w-4 mr-2" />
+                      6시간 위험도 예측 추이
+                    </h4>
+                    <div className="bg-slate-800 rounded-lg p-4">
+                      <ResponsiveContainer width="100%" height={250}>
+                        <AreaChart data={generatePredictionData(selectedSensor)}>
+                          <defs>
+                            <linearGradient id="colorPredicted" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                            </linearGradient>
+                            <linearGradient id="colorRainfall" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.2}/>
+                              <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                          <XAxis
+                            dataKey="time"
+                            stroke="#94a3b8"
+                            style={{ fontSize: '12px' }}
+                          />
+                          <YAxis
+                            stroke="#94a3b8"
+                            style={{ fontSize: '12px' }}
+                            label={{ value: '위험도 (%)', angle: -90, position: 'insideLeft', style: { fill: '#94a3b8' } }}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: '#1e293b',
+                              border: '1px solid #334155',
+                              borderRadius: '8px',
+                              padding: '8px'
+                            }}
+                            labelStyle={{ color: '#f1f5f9' }}
+                          />
+                          <Legend
+                            wrapperStyle={{ paddingTop: '10px' }}
+                            iconType="line"
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="predicted"
+                            stroke="#3b82f6"
+                            strokeWidth={3}
+                            fill="url(#colorPredicted)"
+                            name="예측 위험도"
+                            dot={{ fill: '#3b82f6', r: 4 }}
+                            activeDot={{ r: 6 }}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="rainfall"
+                            stroke="#06b6d4"
+                            strokeWidth={2}
+                            fill="url(#colorRainfall)"
+                            name="강수량 (mm)"
+                            dot={{ fill: '#06b6d4', r: 3 }}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                      <div className="mt-3 flex items-center justify-center space-x-6 text-xs text-slate-400">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                          <span>예측 위험도 추이</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-cyan-500 rounded-full mr-2"></div>
+                          <span>예상 강수량</span>
                         </div>
                       </div>
                     </div>
