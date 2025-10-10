@@ -65,7 +65,7 @@ export default function KakaoMap({ sensorData, onMarkerClick, optimizedRoute, sh
     }
 
     // 기존 마커 제거
-    markers.current.forEach(marker => marker.setMap(null));
+    markers.current.forEach((marker: any) => marker.setMap(null));
     markers.current = [];
 
     // 새 마커 추가
@@ -82,7 +82,7 @@ export default function KakaoMap({ sensorData, onMarkerClick, optimizedRoute, sh
         position,
         image: markerImage,
         title: sensor.location.name,
-      });
+      }) as any;
 
       marker.setMap(map.current);
 
@@ -94,7 +94,7 @@ export default function KakaoMap({ sensorData, onMarkerClick, optimizedRoute, sh
       });
 
       // 정보창 생성
-      const infoWindow = createInfoWindow(sensor);
+      const infoWindow = createInfoWindow(sensor) as any;
 
       // 마커 호버 이벤트
       window.kakao.maps.event.addListener(marker, 'mouseover', () => {
