@@ -1,10 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import KakaoMap from '@/components/map/KakaoMap';
+import dynamic from 'next/dynamic';
 import { SensorData } from '@/types';
 import { OptimizedRoute } from '@/lib/routeOptimizer';
 import { MapPin, Route, X, TrendingDown, Clock, DollarSign } from 'lucide-react';
+
+// Dynamic import to prevent SSR issues with Kakao Maps
+const KakaoMap = dynamic(() => import('@/components/map/KakaoMap'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-900">
+    <div className="text-white">지도 로딩 중...</div>
+  </div>
+});
 
 interface RouteMapViewProps {
   sensorData: SensorData[];

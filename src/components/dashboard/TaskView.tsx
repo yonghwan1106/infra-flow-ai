@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { MaintenanceTask, SensorData } from '@/types';
 import { optimizeTeamRoutes, OptimizedRoute } from '@/lib/routeOptimizer';
-import RouteMapView from './RouteMapView';
 import {
   Users,
   ClipboardList,
@@ -20,6 +20,14 @@ import {
   Zap,
   Map
 } from 'lucide-react';
+
+// Dynamic import to prevent SSR issues with Kakao Maps
+const RouteMapView = dynamic(() => import('./RouteMapView'), {
+  ssr: false,
+  loading: () => <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+    <div className="text-white">지도 로딩 중...</div>
+  </div>
+});
 
 interface TaskViewProps {
   tasks: MaintenanceTask[];
