@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infra-Flow AI - 발표 자료</title>
+    <link rel="stylesheet" href="css/presentation.css">
+</head>
+<body>
+    <!-- 진행률 바 -->
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+
+    <!-- 타이머 -->
+    <div class="timer">
+        <span id="timer-display">10:00</span>
+    </div>
+
+    <!-- 슬라이드 컨테이너 -->
+    <div class="presentation">
+
+        <!-- 슬라이드 1: 타이틀 -->
+        <section class="slide active" data-duration="15">
+            <div class="slide-bg flood-bg"></div>
+            <div class="slide-content center">
+                <h1 class="title-main fade-in">Infra-Flow AI</h1>
+                <p class="title-sub fade-in-delay-1">도시 침수 방지를 위한<br>AI 기반 예측적 빗물받이 관리 시스템</p>
+                <div class="title-info fade-in-delay-2">
+                    <p>박용환 | 크리에이티브 넥서스</p>
+                    <p>Startup Water 2025</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 2: 문제 정의 -->
+        <section class="slide" data-duration="45">
+            <div class="slide-content">
+                <h2>발밑의 시한폭탄, 막혀버린 도시의 숨구멍</h2>
+
+                <div class="two-column">
+                    <div class="stats-grid">
+                        <div class="stat-card fade-in">
+                            <div class="stat-icon">📊</div>
+                            <h3>현황</h3>
+                            <ul>
+                                <li>서울시 빗물받이: <span class="count-up" data-target="580000">0</span>개</li>
+                                <li>연간 관리 예산: <span class="count-up" data-target="224">0</span>억 원</li>
+                                <li>예산 증가율: <span class="count-up" data-target="240">0</span>% (4년간)</li>
+                            </ul>
+                        </div>
+
+                        <div class="stat-card fade-in-delay-1">
+                            <div class="stat-icon">❌</div>
+                            <h3>현재 관리 방식의 한계</h3>
+                            <ul>
+                                <li><strong>사후 대응적:</strong> 문제 발생 후 조치</li>
+                                <li><strong>비효율적:</strong> 어디가 막혔는지 모름</li>
+                                <li><strong>예측 불가:</strong> 다음 침수를 막을 수 없음</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="image-compare fade-in-delay-2">
+                        <div class="compare-image">
+                            <div class="compare-label">막힌 빗물받이</div>
+                            <div class="placeholder-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        </div>
+                        <div class="compare-arrow">→</div>
+                        <div class="compare-image">
+                            <div class="compare-label">침수된 도로</div>
+                            <div class="placeholder-img" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 3: 핵심 인사이트 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content center">
+                <h2 class="fade-in">왜 우리는 항상 '뒤늦게' 알게 될까?</h2>
+
+                <div class="insight-questions">
+                    <p class="insight-q fade-in-delay-1" style="font-size: 3rem; color: #60a5fa;">"문제를 미리 알 수 있다면?"</p>
+                    <p class="insight-q fade-in-delay-2" style="font-size: 3rem; color: #34d399;">"막히기 전에 청소할 수 있다면?"</p>
+                    <p class="insight-q fade-in-delay-3" style="font-size: 3rem; color: #fbbf24;">"데이터로 침수를 예측할 수 있다면?"</p>
+                </div>
+
+                <div class="insight-arrow fade-in-delay-4" style="margin-top: 4rem; font-size: 2.5rem; font-weight: bold; color: #fff;">
+                    → 사후 대응에서 예측 기반 선제 대응으로
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 4: 솔루션 소개 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content">
+                <h2>Infra-Flow AI: 도시 인프라의 디지털 주치의</h2>
+
+                <div class="solution-flow">
+                    <div class="solution-step fade-in">
+                        <div class="step-icon">📡</div>
+                        <h3>SENSE (감지)</h3>
+                        <p>IoT 센서 + AI 비전</p>
+                        <p class="step-detail">실시간 모니터링</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="solution-step fade-in-delay-1">
+                        <div class="step-icon">🧠</div>
+                        <h3>PREDICT (예측)</h3>
+                        <p>머신러닝 분석</p>
+                        <p class="step-detail">위험도 예측</p>
+                    </div>
+
+                    <div class="flow-arrow">→</div>
+
+                    <div class="solution-step fade-in-delay-2">
+                        <div class="step-icon">🎯</div>
+                        <h3>ACT (행동)</h3>
+                        <p>선제적 청소</p>
+                        <p class="step-detail">최적 자원 배치</p>
+                    </div>
+                </div>
+
+                <div class="solution-highlight fade-in-delay-3">
+                    <p>강우 이전에 위험 지역을 정확히 예측하여<br>한정된 자원을 가장 필요한 곳에 투입</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 5: 시스템 아키텍처 -->
+        <section class="slide" data-duration="45">
+            <div class="slide-content">
+                <h2>어떻게 작동하는가?</h2>
+
+                <div class="architecture">
+                    <div class="arch-layer fade-in-delay-3">
+                        <div class="layer-number">3</div>
+                        <div class="layer-content">
+                            <h3>관제 대시보드 & 모바일 앱</h3>
+                            <p>→ 실시간 의사결정 지원</p>
+                        </div>
+                    </div>
+
+                    <div class="arch-arrow">↑</div>
+
+                    <div class="arch-layer fade-in-delay-2">
+                        <div class="layer-number">2</div>
+                        <div class="layer-content">
+                            <h3>AI 예측 엔진</h3>
+                            <p>→ 기상청 + GIS + 이력 데이터 융합</p>
+                            <p>→ 막힘 위험도 <strong>90% 정확도</strong> 예측</p>
+                        </div>
+                    </div>
+
+                    <div class="arch-arrow">↑</div>
+
+                    <div class="arch-layer fade-in-delay-1">
+                        <div class="layer-number">1</div>
+                        <div class="layer-content">
+                            <h3>하이브리드 IoT 센서</h3>
+                            <p>→ 수위 센서 (광역 모니터링)</p>
+                            <p>→ AI 비전 센서 (이물질 정량화)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 6: 하이브리드 센서 전략 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content">
+                <h2>비용 효율적 센서 배치 전략</h2>
+
+                <div class="sensor-strategy">
+                    <div class="strategy-map fade-in">
+                        <div class="map-area green-zone">
+                            <h3>🟢 일반 구역 (80%)</h3>
+                            <p>💰 저비용 수위 센서</p>
+                            <p class="zone-detail">배수 이상 징후 감지</p>
+                        </div>
+                        <div class="map-area red-zone">
+                            <h3>🔴 고위험 구역 (20%)</h3>
+                            <p>🤖 AI 비전 센서</p>
+                            <p class="zone-detail">이물질 종류별 직접 탐지<br>담배꽁초, 쓰레기, 낙엽 정량화</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-benefits fade-in-delay-1">
+                        <div class="benefit-item">
+                            <span class="check">✓</span> 전체 설치 비용 <strong>40% 절감</strong>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="check">✓</span> 핵심 지역 집중 모니터링
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 7: 차별화 포인트 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content">
+                <h2>왜 Infra-Flow AI인가?</h2>
+
+                <div class="comparison-table fade-in">
+                    <div class="comparison-header">
+                        <div class="compare-col">기존 스마트 하수관 시스템</div>
+                        <div class="compare-divider">VS</div>
+                        <div class="compare-col highlight">Infra-Flow AI</div>
+                    </div>
+
+                    <div class="comparison-row">
+                        <div class="compare-item">
+                            <span class="compare-icon">❌</span>
+                            <p>관로 내부만 모니터링</p>
+                        </div>
+                        <div class="compare-divider"></div>
+                        <div class="compare-item highlight">
+                            <span class="compare-icon">✅</span>
+                            <p>최초 원인 지점 타겟팅</p>
+                        </div>
+                    </div>
+
+                    <div class="comparison-row">
+                        <div class="compare-item">
+                            <span class="compare-icon">❌</span>
+                            <p>수위 데이터로 간접 추정</p>
+                        </div>
+                        <div class="compare-divider"></div>
+                        <div class="compare-item highlight">
+                            <span class="compare-icon">✅</span>
+                            <p>이물질 직접 탐지·정량화</p>
+                        </div>
+                    </div>
+
+                    <div class="comparison-row">
+                        <div class="compare-item">
+                            <span class="compare-icon">❌</span>
+                            <p>사후 대응</p>
+                        </div>
+                        <div class="compare-divider"></div>
+                        <div class="compare-item highlight">
+                            <span class="compare-icon">✅</span>
+                            <p>사전 예측·선제 대응</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="differentiation-highlight fade-in-delay-1">
+                    <p>"침수의 시작점, 빗물받이를 정복합니다"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 8: 프로토타입 시연 준비 -->
+        <section class="slide" data-duration="15">
+            <div class="slide-content center">
+                <h2 class="fade-in">실제로 만들었습니다</h2>
+
+                <div class="demo-prep fade-in-delay-1">
+                    <div class="demo-icon">🌐</div>
+                    <h1 class="demo-url">infra-flow-ai.vercel.app</h1>
+                    <p class="demo-text">"지금부터 실제 작동하는 시스템을 보여드리겠습니다"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 9: 프로토타입 - 메인 대시보드 -->
+        <section class="slide" data-duration="40">
+            <div class="slide-content">
+                <h2>관제센터 대시보드</h2>
+
+                <div class="demo-screenshot fade-in">
+                    <div class="iframe-container">
+                        <iframe src="/" title="Infra-Flow AI Dashboard"></iframe>
+                    </div>
+                </div>
+
+                <div class="demo-description fade-in-delay-1">
+                    <div class="demo-stat">
+                        <span class="stat-label">전체 빗물받이:</span>
+                        <span class="stat-value">1,247개</span>
+                    </div>
+                    <div class="demo-stat danger">
+                        <span class="stat-label">위험 상태:</span>
+                        <span class="stat-value">🔴 23개</span>
+                    </div>
+                    <div class="demo-stat warning">
+                        <span class="stat-label">주의 상태:</span>
+                        <span class="stat-value">🟡 156개</span>
+                    </div>
+                    <div class="demo-stat success">
+                        <span class="stat-label">정상 상태:</span>
+                        <span class="stat-value">🟢 1,068개</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 10: 프로토타입 - AI 예측 -->
+        <section class="slide" data-duration="40">
+            <div class="slide-content">
+                <h2>AI 예측 분석</h2>
+
+                <div class="prediction-demo fade-in">
+                    <div class="prediction-main">
+                        <div class="prediction-card">
+                            <h3>6시간 후 예측</h3>
+                            <div class="prediction-value">
+                                <span class="count-up" data-target="80">0</span>mm
+                            </div>
+                            <p>강우량 예상</p>
+                        </div>
+
+                        <div class="prediction-card">
+                            <h3>고위험 예측</h3>
+                            <div class="prediction-value danger">
+                                <span class="count-up" data-target="45">0</span>개소
+                            </div>
+                            <p>즉시 조치 필요</p>
+                        </div>
+
+                        <div class="prediction-card highlight">
+                            <h3>우선 청소 권장</h3>
+                            <div class="prediction-location">강남역 2번 출구</div>
+                            <div class="risk-badge">위험도 <span class="count-up" data-target="95">0</span>%</div>
+                        </div>
+                    </div>
+
+                    <div class="ai-insight fade-in-delay-1">
+                        <div class="insight-icon">💡</div>
+                        <h4>AI 인사이트</h4>
+                        <p>"기상 조건과 센서 데이터 분석 결과,<br>강남역 일대 5개 빗물받이에서 침수 위험이 높습니다"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 11: 프로토타입 - 모바일 -->
+        <section class="slide" data-duration="40">
+            <div class="slide-content">
+                <h2>현장 작업자 화면</h2>
+
+                <div class="mobile-demo fade-in">
+                    <div class="mobile-frame">
+                        <div class="mobile-header">
+                            <h3>오늘의 작업 목록</h3>
+                            <div class="task-badge">5건</div>
+                        </div>
+
+                        <div class="task-list">
+                            <div class="task-item priority-high">
+                                <div class="task-number">1</div>
+                                <div class="task-info">
+                                    <h4>강남역 2번 출구</h4>
+                                    <p>위험도: 95% | 예상 시간: 30분</p>
+                                </div>
+                            </div>
+                            <div class="task-item priority-high">
+                                <div class="task-number">2</div>
+                                <div class="task-info">
+                                    <h4>테헤란로 123번지</h4>
+                                    <p>위험도: 88% | 예상 시간: 25분</p>
+                                </div>
+                            </div>
+                            <div class="task-item priority-medium">
+                                <div class="task-number">3</div>
+                                <div class="task-info">
+                                    <h4>역삼역 1번 출구</h4>
+                                    <p>위험도: 72% | 예상 시간: 20분</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mobile-footer">
+                            <div class="route-info">
+                                <span class="route-icon">🗺️</span>
+                                <div>
+                                    <p><strong>AI 추천 최적 경로</strong></p>
+                                    <p>예상 소요시간: 2시간 30분</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 12: 기대 효과 -->
+        <section class="slide" data-duration="45">
+            <div class="slide-content">
+                <h2>데이터로 증명된 가치</h2>
+
+                <div class="impact-grid">
+                    <div class="impact-card fade-in">
+                        <div class="impact-icon">💰</div>
+                        <h3>경제적 효과</h3>
+                        <ul>
+                            <li>청소 효율성 <strong><span class="count-up" data-target="30">0</span>% 향상</strong></li>
+                            <li>연간 <strong><span class="count-up" data-target="67">0</span>억 원 절감</strong></li>
+                            <li>침수 피해 예방 → 사회적 비용 수백억 원 절감</li>
+                        </ul>
+                    </div>
+
+                    <div class="impact-card fade-in-delay-1">
+                        <div class="impact-icon">🛡️</div>
+                        <h3>사회적 효과</h3>
+                        <ul>
+                            <li>시민 생명과 재산 보호</li>
+                            <li>침수 취약 계층 안전망 강화</li>
+                            <li>재난 대응 시스템 신뢰도 제고</li>
+                        </ul>
+                    </div>
+
+                    <div class="impact-card fade-in-delay-2">
+                        <div class="impact-icon">🚀</div>
+                        <h3>기술적 효과</h3>
+                        <ul>
+                            <li>도시 인프라 예측 유지보수 표준 모델</li>
+                            <li>글로벌 스마트시티 기술 경쟁력 확보</li>
+                            <li>K-water 글로벌 확산 모델</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 13: 실현가능성 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content">
+                <h2>검증된 기술의 융합</h2>
+
+                <div class="tech-feasibility fade-in">
+                    <div class="tech-item">
+                        <div class="tech-name">IoT 센서</div>
+                        <div class="trl-bar">
+                            <div class="trl-fill" data-width="85"></div>
+                        </div>
+                        <div class="tech-status">TRL 7-8 ✓ 상용화 완료</div>
+                    </div>
+
+                    <div class="tech-item">
+                        <div class="tech-name">AI 비전 분석</div>
+                        <div class="trl-bar">
+                            <div class="trl-fill" data-width="75"></div>
+                        </div>
+                        <div class="tech-status">TRL 6-7 ✓ 적용 사례 다수</div>
+                    </div>
+
+                    <div class="tech-item">
+                        <div class="tech-name">클라우드 컴퓨팅</div>
+                        <div class="trl-bar">
+                            <div class="trl-fill" data-width="95"></div>
+                        </div>
+                        <div class="tech-status">TRL 8-9 ✓ 안정적 운영</div>
+                    </div>
+
+                    <div class="tech-item">
+                        <div class="tech-name">머신러닝 예측</div>
+                        <div class="trl-bar">
+                            <div class="trl-fill" data-width="65"></div>
+                        </div>
+                        <div class="tech-status">TRL 5-6 ✓ 개발 가능</div>
+                    </div>
+                </div>
+
+                <div class="tech-highlight fade-in-delay-1">
+                    <p>"새로운 기술이 아닙니다.<br>검증된 기술을 혁신적으로 융합했습니다."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 14: 사업화 계획 -->
+        <section class="slide" data-duration="45">
+            <div class="slide-content">
+                <h2>3단계 사업화 로드맵</h2>
+
+                <div class="roadmap fade-in">
+                    <div class="roadmap-phase">
+                        <div class="phase-marker">1</div>
+                        <div class="phase-content">
+                            <h3>MVP 검증 (Year 1)</h3>
+                            <ul>
+                                <li>파일럿 지역: 강남역 일대 100개소</li>
+                                <li>기술 검증 + ROI 입증</li>
+                                <li>투자 유치: 5억 원</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="roadmap-arrow">→</div>
+
+                    <div class="roadmap-phase">
+                        <div class="phase-marker">2</div>
+                        <div class="phase-content">
+                            <h3>사업 확장 (Year 2-3)</h3>
+                            <ul>
+                                <li>서울 전역 확대</li>
+                                <li>타 지자체 진출 (인천, 부산, 대구)</li>
+                                <li>수익 모델 안정화</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="roadmap-arrow">→</div>
+
+                    <div class="roadmap-phase">
+                        <div class="phase-marker">3</div>
+                        <div class="phase-content">
+                            <h3>고도화 (Year 4+)</h3>
+                            <ul>
+                                <li>AI 모델 고도화</li>
+                                <li>하수관로 등 연관 분야 확장</li>
+                                <li>해외 진출 (동남아시아)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 15: 팀 & 파트너십 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content">
+                <h2>실행 가능한 팀 구성</h2>
+
+                <div class="team-section fade-in">
+                    <h3>핵심팀 (4명)</h3>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-icon">👨‍💻</div>
+                            <p>IoT 하드웨어 전문가</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">🤖</div>
+                            <p>AI/ML 엔지니어</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">☁️</div>
+                            <p>클라우드 개발자</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">🏙️</div>
+                            <p>도시공학/방재 전문가</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="partnership-section fade-in-delay-1">
+                    <h3>파트너십 전략</h3>
+                    <div class="partner-grid">
+                        <div class="partner-item">
+                            <span class="partner-icon">🤝</span>
+                            <p><strong>K-water:</strong> 기술 검증 및 확산</p>
+                        </div>
+                        <div class="partner-item">
+                            <span class="partner-icon">🏛️</span>
+                            <p><strong>지자체:</strong> 파일럿 테스트 협력</p>
+                        </div>
+                        <div class="partner-item">
+                            <span class="partner-icon">🏢</span>
+                            <p><strong>통신사:</strong> IoT 네트워크 구축</p>
+                        </div>
+                        <div class="partner-item">
+                            <span class="partner-icon">🎓</span>
+                            <p><strong>연구기관:</strong> AI 모델 고도화</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 16: 비전 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content center">
+                <h2 class="fade-in">우리의 비전</h2>
+
+                <div class="vision-main fade-in-delay-1">
+                    <h1 class="vision-title">"도시 인프라의 디지털 주치의"</h1>
+                    <p class="vision-text">예측 가능한 데이터로<br>침수 없는 안전한 도시를 만듭니다</p>
+                </div>
+
+                <div class="vision-tagline fade-in-delay-2">
+                    <p class="brand">Infra-Flow AI</p>
+                    <p class="tagline">Making Cities Flood-Proof with AI</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬라이드 17: 클로징 -->
+        <section class="slide" data-duration="30">
+            <div class="slide-content center">
+                <h2 class="fade-in">함께 만들어갈 미래</h2>
+
+                <div class="closing-comparison fade-in-delay-1">
+                    <div class="year-comparison">
+                        <div class="year-item past">
+                            <h3>2022년 강남</h3>
+                            <p class="year-question">"왜 막지 못했을까?"</p>
+                        </div>
+
+                        <div class="year-arrow">→</div>
+
+                        <div class="year-item future">
+                            <h3>2026년 대한민국</h3>
+                            <p class="year-question">"어떻게 막았을까?"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="closing-answer fade-in-delay-2">
+                    <h1>그 답은 Infra-Flow AI입니다.</h1>
+                </div>
+
+                <div class="closing-thanks fade-in-delay-3">
+                    <h2>감사합니다.</h2>
+                </div>
+
+                <div class="contact-info fade-in-delay-4">
+                    <p><strong>박용환 | 크리에이티브 넥서스</strong></p>
+                    <p>📧 sanoramyun8@gmail.com</p>
+                    <p>📞 010-7939-3123</p>
+                    <p>🌐 https://infra-flow-ai.vercel.app</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 내비게이션 컨트롤 -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prev-btn">◀</button>
+        <span class="slide-counter"><span id="current-slide">1</span> / <span id="total-slides">17</span></span>
+        <button class="nav-btn" id="next-btn">▶</button>
+    </div>
+
+    <script src="js/presentation.js"></script>
+</body>
+</html>
