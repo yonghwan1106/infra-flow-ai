@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import KakaoMap from '@/components/map/KakaoMap';
-import { SensorData, MaintenanceTask } from '@/types';
+import { SensorData } from '@/types';
 import { OptimizedRoute } from '@/lib/routeOptimizer';
 import { MapPin, Route, X, TrendingDown, Clock, DollarSign } from 'lucide-react';
 
