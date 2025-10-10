@@ -8,7 +8,8 @@ import {
   AlertTriangle,
   Monitor,
   Activity,
-  Info
+  Info,
+  Presentation
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -28,6 +29,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     { id: 'tasks', label: '작업 관리', icon: Users },
     { id: 'alerts', label: '알림 센터', icon: AlertTriangle },
     { id: 'about', label: '프로젝트 소개', icon: Info },
+    { id: 'presentation', label: '발표 자료', icon: Presentation, external: true, href: '/presentation' },
     { id: 'settings', label: '설정', icon: Settings },
   ];
 
@@ -48,6 +50,24 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
+
+          // 외부 링크인 경우
+          if (item.external && item.href) {
+            return (
+              <a
+                key={item.id}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center px-4 py-3 text-left transition-colors text-slate-300 hover:bg-slate-700 hover:text-white"
+              >
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                {!isCollapsed && (
+                  <span className="ml-3 font-medium">{item.label}</span>
+                )}
+              </a>
+            );
+          }
 
           return (
             <button
