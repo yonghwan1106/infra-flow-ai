@@ -1212,6 +1212,160 @@ h2 {
     font-weight: 900;
 }
 
+/* 슬라이드 1 개선: 강남 침수 배경 효과 */
+.disaster-context {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.context-badge {
+    background: rgba(239, 68, 68, 0.2);
+    border: 2px solid #ef4444;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ef4444;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+    }
+}
+
+.rain-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(96, 165, 250, 0.03) 2px,
+        rgba(96, 165, 250, 0.03) 4px
+    );
+    animation: rain 0.3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rain {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(20px);
+    }
+}
+
+.water-ripple {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.1));
+    animation: ripple 4s ease-in-out infinite;
+}
+
+@keyframes ripple {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scaleY(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scaleY(1.1);
+    }
+}
+
+.title-tagline {
+    margin-top: 3rem;
+    font-size: 2.5rem;
+    color: #fbbf24;
+    font-weight: 700;
+    font-style: italic;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+/* 슬라이드 8 개선: 펄스 애니메이션 */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.demo-icon {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.demo-url-link {
+    position: relative;
+}
+
+.demo-url-link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110%;
+    height: 110%;
+    border-radius: 16px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2), transparent 70%);
+    animation: pulseRing 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes pulseRing {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+    }
+}
+
+.demo-features {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.feature-badge {
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid #3b82f6;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #60a5fa;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-badge:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 30px rgba(59, 130, 246, 0.4);
+}
+
 /* 반응형 */
 @media (max-width: 1200px) {
     .slide-content {
