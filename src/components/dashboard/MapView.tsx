@@ -11,14 +11,25 @@ interface MapViewProps {
 
 export default function MapView({ sensorData }: MapViewProps) {
   const [selectedSensor, setSelectedSensor] = useState<SensorData | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'critical' | 'warning' | 'normal'>('all');
 
   const handleMarkerClick = (sensor: SensorData) => {
     setSelectedSensor(sensor);
   };
 
+  const handleFilterClick = (filter: 'critical' | 'warning' | 'normal') => {
+    // 같은 필터를 다시 클릭하면 필터 해제 (전체 표시)
+    setSelectedFilter(selectedFilter === filter ? 'all' : filter);
+  };
+
   const criticalSensors = sensorData.filter(s => s.status === 'critical');
   const warningSensors = sensorData.filter(s => s.status === 'warning');
   const normalSensors = sensorData.filter(s => s.status === 'normal');
+
+  // 필터링된 센서 데이터
+  const filteredSensorData = selectedFilter === 'all'
+    ? sensorData
+    : sensorData.filter(s => s.status === selectedFilter);
 
   return (
     <div className="space-y-6">
@@ -30,37 +41,67 @@ export default function MapView({ sensorData }: MapViewProps) {
         </div>
       </div>
 
-      {/* 통계 카드 */}
+      {/* 통계 카드 (클릭 가능) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="control-panel rounded-lg p-4 border border-red-500/30">
+        <button
+          onClick={() => handleFilterClick('critical')}
+          className={`control-panel rounded-lg p-4 border transition-all hover:scale-105 cursor-pointer ${
+            selectedFilter === 'critical'
+              ? 'border-red-500 bg-red-500/10'
+              : 'border-red-500/30 hover:border-red-500/50'
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-400">위험 상태</p>
               <p className="text-2xl font-bold text-red-400">{criticalSensors.length}</p>
+              <p className="text-xs text-slate-500 mt-1">
+                {selectedFilter === 'critical' ? '✓ 필터링 중' : '클릭하여 필터링'}
+              </p>
             </div>
             <div className="w-3 h-3 bg-red-500 rounded-full status-indicator"></div>
           </div>
-        </div>
+        </button>
 
-        <div className="control-panel rounded-lg p-4 border border-yellow-500/30">
+        <button
+          onClick={() => handleFilterClick('warning')}
+          className={`control-panel rounded-lg p-4 border transition-all hover:scale-105 cursor-pointer ${
+            selectedFilter === 'warning'
+              ? 'border-yellow-500 bg-yellow-500/10'
+              : 'border-yellow-500/30 hover:border-yellow-500/50'
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-400">주의 상태</p>
               <p className="text-2xl font-bold text-yellow-400">{warningSensors.length}</p>
+              <p className="text-xs text-slate-500 mt-1">
+                {selectedFilter === 'warning' ? '✓ 필터링 중' : '클릭하여 필터링'}
+              </p>
             </div>
             <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
           </div>
-        </div>
+        </button>
 
-        <div className="control-panel rounded-lg p-4 border border-green-500/30">
+        <button
+          onClick={() => handleFilterClick('normal')}
+          className={`control-panel rounded-lg p-4 border transition-all hover:scale-105 cursor-pointer ${
+            selectedFilter === 'normal'
+              ? 'border-green-500 bg-green-500/10'
+              : 'border-green-500/30 hover:border-green-500/50'
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-400">정상 상태</p>
               <p className="text-2xl font-bold text-green-400">{normalSensors.length}</p>
+              <p className="text-xs text-slate-500 mt-1">
+                {selectedFilter === 'normal' ? '✓ 필터링 중' : '클릭하여 필터링'}
+              </p>
             </div>
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
           </div>
-        </div>
+        </button>
       </div>
 
       {/* 지도와 상세 정보 */}
@@ -68,7 +109,7 @@ export default function MapView({ sensorData }: MapViewProps) {
         {/* 지도 영역 */}
         <div className={`${selectedSensor ? 'lg:col-span-2' : 'lg:col-span-3'} control-panel rounded-lg p-1`}>
           <KakaoMap
-            sensorData={sensorData}
+            sensorData={filteredSensorData}
             onMarkerClick={handleMarkerClick}
           />
         </div>
