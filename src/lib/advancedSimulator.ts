@@ -361,7 +361,41 @@ export function generateAdvancedSensorData(
   }
 
   // 위험도 순으로 정렬
-  return sensors.sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk);
+  sensors.sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk);
+
+  // 최소 위험/주의 상태 보장 (현실적인 시뮬레이션을 위해)
+  const criticalCount = sensors.filter(s => s.status === 'critical').length;
+  const warningCount = sensors.filter(s => s.status === 'warning').length;
+
+  // 위험 상태가 5개 미만이면 위험도 높은 센서들을 critical로 변경
+  if (criticalCount < 5) {
+    const needCount = 5 - criticalCount;
+    const candidates = sensors.filter(s => s.status !== 'critical');
+
+    for (let i = 0; i < Math.min(needCount, candidates.length); i++) {
+      candidates[i].status = 'critical';
+      // 위험도도 critical 범위로 조정
+      if (candidates[i].riskAnalysis.currentRisk < 75) {
+        candidates[i].riskAnalysis.currentRisk = 75 + Math.floor(Math.random() * 20);
+      }
+    }
+  }
+
+  // 주의 상태가 20개 미만이면 중간 위험도 센서들을 warning으로 변경
+  if (warningCount < 20) {
+    const needCount = 20 - warningCount;
+    const candidates = sensors.filter(s => s.status === 'normal');
+
+    for (let i = 0; i < Math.min(needCount, candidates.length); i++) {
+      candidates[i].status = 'warning';
+      // 위험도도 warning 범위로 조정
+      if (candidates[i].riskAnalysis.currentRisk < 50) {
+        candidates[i].riskAnalysis.currentRisk = 50 + Math.floor(Math.random() * 20);
+      }
+    }
+  }
+
+  return sensors;
 }
 
 /**
