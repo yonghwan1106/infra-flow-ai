@@ -8,21 +8,58 @@ export function generateSensorData(count: number = 50, rainfall: number = 0): Se
 
 // 작업 관리 데이터 생성
 export function generateMaintenanceTasks(sensorData: SensorData[]): MaintenanceTask[] {
-  const highRiskSensors = sensorData.filter(s => s.status === 'critical' || s.status === 'warning');
+  const tasks: MaintenanceTask[] = [];
 
-  return highRiskSensors.slice(0, 15).map((sensor, index) => ({
-    id: `task-${String(index + 1).padStart(3, '0')}`,
-    deviceId: sensor.deviceId,
-    priority: sensor.status === 'critical' ? 'high' : 'medium',
-    status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.5 ? 'in_progress' : 'pending',
-    assignedTeam: `청소팀 ${Math.floor(Math.random() * 3) + 1}`,
-    estimatedTime: Math.round(Math.random() * 40 + 20), // 20-60분
-    route: {
-      order: index + 1,
-      optimizedPath: `Route-${index + 1}`,
-    },
-    createdAt: new Date(Date.now() - Math.random() * 86400000), // 최근 24시간 내
-  }));
+  // 1. 위험/주의 상태 센서는 긴급 작업 생성
+  const highRiskSensors = sensorData.filter(s => s.status === 'critical' || s.status === 'warning');
+  highRiskSensors.slice(0, 10).forEach((sensor, index) => {
+    tasks.push({
+      id: `task-${String(tasks.length + 1).padStart(3, '0')}`,
+      deviceId: sensor.deviceId,
+      priority: sensor.status === 'critical' ? 'high' : 'medium',
+      status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.5 ? 'in_progress' : 'pending',
+      assignedTeam: `청소팀 ${Math.floor(Math.random() * 3) + 1}`,
+      estimatedTime: Math.round(Math.random() * 40 + 20), // 20-60분
+      route: {
+        order: tasks.length + 1,
+        optimizedPath: `Route-${tasks.length + 1}`,
+      },
+      createdAt: new Date(Date.now() - Math.random() * 86400000), // 최근 24시간 내
+    });
+  });
+
+  // 2. 정상 상태 센서 중 일부는 정기 점검/청소 작업 생성
+  const normalSensors = sensorData.filter(s => s.status === 'normal');
+  const regularMaintenanceCount = Math.min(20, Math.floor(normalSensors.length * 0.1)); // 정상 센서의 10%, 최대 20개
+
+  normalSensors.slice(0, regularMaintenanceCount).forEach((sensor, index) => {
+    tasks.push({
+      id: `task-${String(tasks.length + 1).padStart(3, '0')}`,
+      deviceId: sensor.deviceId,
+      priority: 'low', // 정기 작업은 낮은 우선순위
+      status: Math.random() > 0.6 ? 'completed' : Math.random() > 0.4 ? 'in_progress' : 'pending',
+      assignedTeam: `청소팀 ${Math.floor(Math.random() * 3) + 1}`,
+      estimatedTime: Math.round(Math.random() * 30 + 15), // 15-45분
+      route: {
+        order: tasks.length + 1,
+        optimizedPath: `Route-${tasks.length + 1}`,
+      },
+      createdAt: new Date(Date.now() - Math.random() * 86400000), // 최근 24시간 내
+    });
+  });
+
+  // 순서 재조정 (우선순위 높은 것부터)
+  tasks.sort((a, b) => {
+    const priorityOrder = { high: 0, medium: 1, low: 2 };
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
+  });
+
+  // 순서 번호 재할당
+  tasks.forEach((task, index) => {
+    task.route.order = index + 1;
+  });
+
+  return tasks;
 }
 
 // 기상 데이터 생성 (실제 API 사용 시도 후 실패 시 더미 데이터)
