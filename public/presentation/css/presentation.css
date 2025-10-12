@@ -1191,6 +1191,31 @@ h2 {
     line-height: 2;
 }
 
+/* 슬라이드 17: 사진 출처 */
+.image-credit {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    font-size: 0.75rem;
+    color: rgba(148, 163, 184, 0.7);
+    background: rgba(15, 23, 42, 0.6);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.image-credit a {
+    color: rgba(148, 163, 184, 0.9);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.image-credit a:hover {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
 /* 내비게이션 */
 .nav-controls {
     position: fixed;
