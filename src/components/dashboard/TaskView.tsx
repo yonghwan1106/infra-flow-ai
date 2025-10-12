@@ -144,7 +144,7 @@ export default function TaskView({ tasks, sensorData }: TaskViewProps) {
             <Zap className="h-5 w-5 text-yellow-400" />
             <div>
               <h3 className="text-white font-semibold">AI 경로 최적화</h3>
-              <p className="text-sm text-slate-400">TSP 알고리즘 기반 자동 경로 생성</p>
+              <p className="text-sm text-slate-400">TSP (Traveling Salesman Problem) 알고리즘 기반 자동 경로 생성</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
