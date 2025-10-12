@@ -14,7 +14,8 @@ import {
   Clock,
   Thermometer,
   CloudRain,
-  Droplets
+  Droplets,
+  Wind
 } from 'lucide-react';
 
 export default function RealtimeView() {
@@ -176,7 +177,7 @@ export default function RealtimeView() {
         <div className="control-panel rounded-lg p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
             <CloudRain className="h-5 w-5 mr-2" />
-            실시간 기상
+            기상 정보
           </h3>
 
           {data?.data?.weather && (
@@ -196,21 +197,31 @@ export default function RealtimeView() {
                     <p className="text-white font-semibold">{data.data.weather.humidity}%</p>
                   </div>
                 </div>
+                <div className="flex items-center">
+                  <CloudRain className="h-4 w-4 text-blue-400 mr-2" />
+                  <div>
+                    <p className="text-sm text-slate-400">강수량</p>
+                    <p className="text-white font-semibold">{data.data.weather.rainfall}mm</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <Wind className="h-4 w-4 text-blue-400 mr-2" />
+                  <div>
+                    <p className="text-sm text-slate-400">풍속</p>
+                    <p className="text-white font-semibold">{data.data.weather.windSpeed}m/s</p>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex items-center">
-                <CloudRain className="h-4 w-4 text-blue-400 mr-2" />
-                <div className="flex-1">
-                  <p className="text-sm text-slate-400">강수량</p>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-white font-semibold">{data.data.weather.rainfall}mm</p>
-                    <div className="flex-1 bg-slate-700 rounded-full h-2">
-                      <div
-                        className="bg-blue-500 h-2 rounded-full"
-                        style={{ width: `${Math.min(100, data.data.weather.rainfall)}%` }}
-                      ></div>
+              <div>
+                <p className="text-sm text-slate-400 mb-2">6시간 강수 예보</p>
+                <div className="space-y-2">
+                  {data.data.weather.forecast.slice(0, 3).map((forecast, index) => (
+                    <div key={index} className="flex justify-between text-sm">
+                      <span className="text-slate-300">{forecast.time}</span>
+                      <span className="text-white">{forecast.rainfall}mm</span>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>

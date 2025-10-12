@@ -15,6 +15,12 @@ interface RealtimeData {
       temperature: number;
       rainfall: number;
       humidity: number;
+      windSpeed: number;
+      forecast: Array<{
+        time: string;
+        rainfall: number;
+        probability: number;
+      }>;
     };
     alerts: Array<{
       id: string;

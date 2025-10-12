@@ -51,6 +51,8 @@ export async function GET(request: NextRequest) {
                 temperature: currentWeather.temperature,
                 rainfall: currentWeather.rainfall,
                 humidity: currentWeather.humidity,
+                windSpeed: currentWeather.windSpeed,
+                forecast: currentWeather.forecast,
               },
               alerts: recentAlerts,
               criticalSensors: criticalSensors.slice(0, 5).map(sensor => ({
