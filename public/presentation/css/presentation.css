@@ -81,10 +81,19 @@ body {
 }
 
 .flood-bg {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9)),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%231e293b" width="1200" height="800"/><path fill="%23334155" d="M0 400 Q 300 200 600 400 T 1200 400 V800 H0 Z"/></svg>');
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(30, 41, 59, 0.85)),
+                url('../images/000.PNG');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+}
+
+.workers-bg {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(30, 41, 59, 0.85)),
+                url('../images/005.PNG');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* 슬라이드 콘텐츠 */
