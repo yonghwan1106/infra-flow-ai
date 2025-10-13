@@ -20,9 +20,8 @@ import {
 } from 'lucide-react';
 
 export default function RealtimeView() {
-  const { data, isConnected, error, reconnect } = useRealtime();
-  const { weather } = useData(); // 공유 날씨 데이터 사용
-  const [previousData, setPreviousData] = useState<{ data: { criticalCount: number; warningCount: number; completedTasks: number } } | null>(null);
+  const { sensorData, tasks, weather, stats, alerts } = useData(); // Context에서 모든 데이터 가져오기
+  const [previousStats, setPreviousStats] = useState<{ criticalCount: number; warningCount: number; completedTasks: number } | null>(null);
   const [trends, setTrends] = useState<{
     critical: 'up' | 'down' | 'same';
     warning: 'up' | 'down' | 'same';
@@ -31,22 +30,26 @@ export default function RealtimeView() {
 
   // 트렌드 계산
   useEffect(() => {
-    if (data?.data && previousData?.data) {
+    if (stats && previousStats) {
       const newTrends = {
-        critical: data.data.criticalCount > previousData.data.criticalCount ? 'up' as const :
-                 data.data.criticalCount < previousData.data.criticalCount ? 'down' as const : 'same' as const,
-        warning: data.data.warningCount > previousData.data.warningCount ? 'up' as const :
-                data.data.warningCount < previousData.data.warningCount ? 'down' as const : 'same' as const,
-        tasks: data.data.completedTasks > previousData.data.completedTasks ? 'up' as const :
-              data.data.completedTasks < previousData.data.completedTasks ? 'down' as const : 'same' as const,
+        critical: stats.criticalCount > previousStats.criticalCount ? 'up' as const :
+                 stats.criticalCount < previousStats.criticalCount ? 'down' as const : 'same' as const,
+        warning: stats.warningCount > previousStats.warningCount ? 'up' as const :
+                stats.warningCount < previousStats.warningCount ? 'down' as const : 'same' as const,
+        tasks: stats.completedTasks > previousStats.completedTasks ? 'up' as const :
+              stats.completedTasks < previousStats.completedTasks ? 'down' as const : 'same' as const,
       };
       setTrends(newTrends);
     }
 
-    if (data?.data) {
-      setPreviousData(data);
+    if (stats) {
+      setPreviousStats({
+        criticalCount: stats.criticalCount,
+        warningCount: stats.warningCount,
+        completedTasks: stats.completedTasks
+      });
     }
-  }, [data, previousData]);
+  }, [stats, previousStats]);
 
   const getTrendIcon = (trend: 'up' | 'down' | 'same') => {
     switch (trend) {
@@ -67,48 +70,16 @@ export default function RealtimeView() {
         <div className="flex items-center space-x-4">
           {/* 연결 상태 */}
           <div className="flex items-center space-x-2">
-            {isConnected ? (
-              <>
-                <Wifi className="h-5 w-5 text-green-400" />
-                <span className="text-green-400 text-sm">실시간 연결됨</span>
-              </>
-            ) : (
-              <>
-                <WifiOff className="h-5 w-5 text-red-400" />
-                <span className="text-red-400 text-sm">연결 끊김</span>
-              </>
-            )}
+            <Wifi className="h-5 w-5 text-green-400" />
+            <span className="text-green-400 text-sm">실시간 연결됨</span>
           </div>
 
-          {/* 재연결 버튼 */}
-          {(error || !isConnected) && (
-            <button
-              onClick={reconnect}
-              className="flex items-center space-x-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-white text-sm"
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span>재연결</span>
-            </button>
-          )}
-
-          {/* 마지막 업데이트 시간 */}
-          {data?.timestamp && (
-            <div className="text-sm text-slate-400">
-              {new Date(data.timestamp).toLocaleTimeString('ko-KR')}
-            </div>
-          )}
+          {/* 업데이트 시간 */}
+          <div className="text-sm text-slate-400">
+            업데이트 주기: 5초
+          </div>
         </div>
       </div>
-
-      {/* 에러 메시지 */}
-      {error && (
-        <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4">
-          <div className="flex items-center">
-            <AlertTriangle className="h-5 w-5 text-red-400 mr-2" />
-            <span className="text-red-400">연결 오류: {error}</span>
-          </div>
-        </div>
-      )}
 
       {/* 실시간 상태 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -118,7 +89,7 @@ export default function RealtimeView() {
               <p className="text-sm text-slate-400">위험 상태</p>
               <div className="flex items-center space-x-2">
                 <p className="text-2xl font-bold text-red-400">
-                  {data?.data?.criticalCount || 0}
+                  {stats?.criticalCount || 0}
                 </p>
                 {getTrendIcon(trends.critical)}
               </div>
@@ -133,7 +104,7 @@ export default function RealtimeView() {
               <p className="text-sm text-slate-400">주의 상태</p>
               <div className="flex items-center space-x-2">
                 <p className="text-2xl font-bold text-yellow-400">
-                  {data?.data?.warningCount || 0}
+                  {stats?.warningCount || 0}
                 </p>
                 {getTrendIcon(trends.warning)}
               </div>
@@ -147,7 +118,7 @@ export default function RealtimeView() {
             <div>
               <p className="text-sm text-slate-400">정상 상태</p>
               <p className="text-2xl font-bold text-green-400">
-                {data?.data?.normalCount || 0}
+                {stats?.normalCount || 0}
               </p>
             </div>
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -160,12 +131,12 @@ export default function RealtimeView() {
               <p className="text-sm text-slate-400">완료된 작업</p>
               <div className="flex items-center space-x-2">
                 <p className="text-2xl font-bold text-white">
-                  {data?.data?.completedTasks || 0}
+                  {stats?.completedTasks || 0}
                 </p>
                 {getTrendIcon(trends.tasks)}
               </div>
               <p className="text-xs text-slate-500">
-                / {data?.data?.totalTasks || 0} 총 작업
+                / {stats?.todayTasks || 0} 총 작업
               </p>
             </div>
             <Clock className="h-6 w-6 text-blue-400" />
@@ -238,22 +209,23 @@ export default function RealtimeView() {
           </h3>
 
           <div className="space-y-3">
-            {data?.data?.criticalSensors?.map((sensor, index) => (
+            {sensorData.filter(s => s.status === 'critical').slice(0, 5).map((sensor, index) => (
               <div key={sensor.id} className="bg-slate-800 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium">{index + 1}. {sensor.location}</span>
-                  <span className="text-red-400 font-bold">{sensor.riskScore}%</span>
+                  <span className="text-white font-medium">{index + 1}. {sensor.location.name}</span>
+                  <span className="text-red-400 font-bold">{sensor.riskAnalysis.currentRisk}%</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="text-slate-400">
-                    수위: <span className="text-white">{sensor.waterLevel}%</span>
+                    수위: <span className="text-white">{sensor.measurements.waterLevel}%</span>
                   </div>
                   <div className="text-slate-400">
-                    쓰레기: <span className="text-white">{sensor.debrisLevel}%</span>
+                    쓰레기: <span className="text-white">{sensor.measurements.debrisLevel}%</span>
                   </div>
                 </div>
               </div>
-            )) || (
+            ))}
+            {sensorData.filter(s => s.status === 'critical').length === 0 && (
               <div className="text-center py-4">
                 <p className="text-slate-400">위험 센서가 없습니다</p>
               </div>
@@ -269,15 +241,15 @@ export default function RealtimeView() {
           </h3>
 
           <div className="space-y-3 max-h-64 overflow-y-auto">
-            {data?.data?.alerts?.map((alert) => (
+            {alerts.slice(0, 3).map((alert) => (
               <div key={alert.id} className="border border-slate-700 rounded-lg p-3">
                 <div className="flex items-start justify-between mb-2">
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    alert.severity === 'high' ? 'bg-red-500/20 text-red-400' :
-                    alert.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                    alert.level === 'high' ? 'bg-red-500/20 text-red-400' :
+                    alert.level === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
                     'bg-blue-500/20 text-blue-400'
                   }`}>
-                    {alert.severity.toUpperCase()}
+                    {alert.level.toUpperCase()}
                   </span>
                 </div>
 
@@ -285,10 +257,11 @@ export default function RealtimeView() {
                 <p className="text-slate-300 text-sm mb-2">{alert.message}</p>
 
                 <div className="text-xs text-slate-400">
-                  {new Date(alert.timestamp).toLocaleTimeString('ko-KR')}
+                  {alert.timestamp.toLocaleTimeString('ko-KR')}
                 </div>
               </div>
-            )) || (
+            ))}
+            {alerts.length === 0 && (
               <div className="text-center py-4">
                 <p className="text-slate-400">새로운 알림이 없습니다</p>
               </div>
@@ -302,21 +275,19 @@ export default function RealtimeView() {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
               <span className="text-sm text-slate-300">
-                실시간 연결: {isConnected ? '활성' : '비활성'}
+                실시간 연결: 활성
               </span>
             </div>
             <div className="text-sm text-slate-400">
-              업데이트 주기: 3초
+              업데이트 주기: 5초
             </div>
           </div>
 
-          {data?.timestamp && (
-            <div className="text-sm text-slate-400">
-              마지막 업데이트: {new Date(data.timestamp).toLocaleString('ko-KR')}
-            </div>
-          )}
+          <div className="text-sm text-slate-400">
+            대시보드와 동기화됨
+          </div>
         </div>
       </div>
     </div>
