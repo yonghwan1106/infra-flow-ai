@@ -1,13 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRealtime } from '@/hooks/useRealtime';
 import { useData } from '@/contexts/DataContext';
 import {
   Activity,
   Wifi,
-  WifiOff,
-  RefreshCw,
   AlertTriangle,
   TrendingUp,
   TrendingDown,
