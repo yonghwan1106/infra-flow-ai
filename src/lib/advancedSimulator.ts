@@ -367,7 +367,7 @@ export function generateAdvancedSensorData(
   let criticalCount = sensors.filter(s => s.status === 'critical').length;
   let warningCount = sensors.filter(s => s.status === 'warning').length;
 
-  // 위험 상태가 너무 많으면 일부를 warning으로 변경
+  // 위험 상태가 너무 많으면 일부를 warning으로 변경 (최대 15개)
   if (criticalCount > 15) {
     const excessCount = criticalCount - 15;
     const criticalSensors = sensors.filter(s => s.status === 'critical');
@@ -377,13 +377,29 @@ export function generateAdvancedSensorData(
       .slice(0, excessCount)
       .forEach(sensor => {
         sensor.status = 'warning';
-        sensor.riskAnalysis.currentRisk = Math.min(sensor.riskAnalysis.currentRisk, 74);
+        sensor.riskAnalysis.currentRisk = Math.min(sensor.riskAnalysis.currentRisk, 84);
       });
     criticalCount = sensors.filter(s => s.status === 'critical').length;
     warningCount = sensors.filter(s => s.status === 'warning').length;
   }
 
-  // 주의 상태가 너무 많으면 일부를 normal로 변경
+  // 위험 상태가 너무 적으면 일부 warning을 critical로 변경 (최소 3개)
+  if (criticalCount < 3) {
+    const neededCount = 3 - criticalCount;
+    const warningSensors = sensors.filter(s => s.status === 'warning');
+    // 위험도가 높은 warning 센서들을 critical로 변경
+    warningSensors
+      .sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk)
+      .slice(0, Math.min(neededCount, warningSensors.length))
+      .forEach(sensor => {
+        sensor.status = 'critical';
+        sensor.riskAnalysis.currentRisk = Math.max(sensor.riskAnalysis.currentRisk, 85);
+      });
+    criticalCount = sensors.filter(s => s.status === 'critical').length;
+    warningCount = sensors.filter(s => s.status === 'warning').length;
+  }
+
+  // 주의 상태가 너무 많으면 일부를 normal로 변경 (최대 20개)
   if (warningCount > 20) {
     const excessCount = warningCount - 20;
     const warningSensors = sensors.filter(s => s.status === 'warning');
@@ -393,7 +409,22 @@ export function generateAdvancedSensorData(
       .slice(0, excessCount)
       .forEach(sensor => {
         sensor.status = 'normal';
-        sensor.riskAnalysis.currentRisk = Math.min(sensor.riskAnalysis.currentRisk, 49);
+        sensor.riskAnalysis.currentRisk = Math.min(sensor.riskAnalysis.currentRisk, 64);
+      });
+    warningCount = sensors.filter(s => s.status === 'warning').length;
+  }
+
+  // 주의 상태가 너무 적으면 일부 normal을 warning으로 변경 (최소 5개)
+  if (warningCount < 5) {
+    const neededCount = 5 - warningCount;
+    const normalSensors = sensors.filter(s => s.status === 'normal');
+    // 위험도가 높은 normal 센서들을 warning으로 변경
+    normalSensors
+      .sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk)
+      .slice(0, Math.min(neededCount, normalSensors.length))
+      .forEach(sensor => {
+        sensor.status = 'warning';
+        sensor.riskAnalysis.currentRisk = Math.max(sensor.riskAnalysis.currentRisk, 65);
       });
   }
 

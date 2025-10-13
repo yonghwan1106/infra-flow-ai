@@ -119,13 +119,51 @@ export function generateDashboardStats(sensorData: SensorData[], tasks: Maintena
 
 // 실시간 알림 생성
 export function generateAlerts(sensorData: SensorData[]) {
-  const criticalSensors = sensorData.filter(s => s.status === 'critical');
+  const alerts: Array<{
+    id: string;
+    level: string;
+    message: string;
+    timestamp: Date;
+    location: string;
+  }> = [];
 
-  return criticalSensors.slice(0, 5).map((sensor, index) => ({
-    id: `alert-${index + 1}`,
-    location: sensor.location.name,
-    message: `빗물받이 막힘 위험 - 수위 ${sensor.measurements.waterLevel}%, 쓰레기량 ${sensor.measurements.debrisLevel}%`,
-    severity: 'high' as const,
-    timestamp: new Date(Date.now() - Math.random() * 3600000), // 최근 1시간 내
-  }));
+  // 위험 상태 센서 알림 (최대 5개)
+  const criticalSensors = sensorData.filter(s => s.status === 'critical');
+  criticalSensors.slice(0, 5).forEach((sensor, index) => {
+    alerts.push({
+      id: `alert-critical-${index + 1}`,
+      level: 'high',
+      location: sensor.location.name,
+      message: `긴급: 빗물받이 막힘 위험 - 수위 ${sensor.measurements.waterLevel}%, 쓰레기량 ${sensor.measurements.debrisLevel}%`,
+      timestamp: new Date(Date.now() - Math.random() * 1800000), // 최근 30분 내
+    });
+  });
+
+  // 주의 상태 센서 알림 (최대 3개)
+  const warningSensors = sensorData.filter(s => s.status === 'warning');
+  warningSensors.slice(0, 3).forEach((sensor, index) => {
+    alerts.push({
+      id: `alert-warning-${index + 1}`,
+      level: 'medium',
+      location: sensor.location.name,
+      message: `주의: 수위 상승 감지 - 수위 ${sensor.measurements.waterLevel}%, 점검 필요`,
+      timestamp: new Date(Date.now() - Math.random() * 3600000), // 최근 1시간 내
+    });
+  });
+
+  // 일반 정보 알림 (시스템 상태)
+  if (alerts.length < 3) {
+    alerts.push({
+      id: 'alert-info-1',
+      level: 'low',
+      location: '시스템',
+      message: `정상 작동 중 - 모니터링 중인 센서 ${sensorData.length}개`,
+      timestamp: new Date(Date.now() - Math.random() * 7200000), // 최근 2시간 내
+    });
+  }
+
+  // 시간순 정렬 (최신순)
+  alerts.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+  return alerts.slice(0, 10); // 최대 10개 알림
 }
