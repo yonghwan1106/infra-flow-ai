@@ -242,11 +242,11 @@ export default function RealtimeView() {
               <div key={alert.id} className="border border-slate-700 rounded-lg p-3">
                 <div className="flex items-start justify-between mb-2">
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    alert.level === 'high' ? 'bg-red-500/20 text-red-400' :
-                    alert.level === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                    alert.severity === 'high' ? 'bg-red-500/20 text-red-400' :
+                    alert.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
                     'bg-blue-500/20 text-blue-400'
                   }`}>
-                    {alert.level.toUpperCase()}
+                    {alert.severity.toUpperCase()}
                   </span>
                 </div>
 

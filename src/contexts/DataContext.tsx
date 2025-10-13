@@ -2,14 +2,14 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { generateSensorData, generateMaintenanceTasks, generateWeatherData, generateDashboardStats, generateAlerts } from '@/lib/mockData';
-import { SensorData, MaintenanceTask, WeatherData, DashboardStats } from '@/types';
+import { SensorData, MaintenanceTask, WeatherData, DashboardStats, Alert } from '@/types';
 
 interface DataContextType {
   sensorData: SensorData[];
   tasks: MaintenanceTask[];
   weather: WeatherData | null;
   stats: DashboardStats | null;
-  alerts: { id: string; level: string; message: string; timestamp: Date; location: string }[];
+  alerts: Alert[];
   lastUpdate: Date;
   isLoading: boolean;
 }
@@ -21,7 +21,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<MaintenanceTask[]>([]);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [alerts, setAlerts] = useState<{ id: string; level: string; message: string; timestamp: Date; location: string }[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [isLoading, setIsLoading] = useState(true);
 

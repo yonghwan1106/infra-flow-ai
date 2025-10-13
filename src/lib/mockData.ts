@@ -121,7 +121,7 @@ export function generateDashboardStats(sensorData: SensorData[], tasks: Maintena
 export function generateAlerts(sensorData: SensorData[]) {
   const alerts: Array<{
     id: string;
-    level: string;
+    severity: 'high' | 'medium' | 'low';
     message: string;
     timestamp: Date;
     location: string;
@@ -132,7 +132,7 @@ export function generateAlerts(sensorData: SensorData[]) {
   criticalSensors.slice(0, 5).forEach((sensor, index) => {
     alerts.push({
       id: `alert-critical-${index + 1}`,
-      level: 'high',
+      severity: 'high',
       location: sensor.location.name,
       message: `긴급: 빗물받이 막힘 위험 - 수위 ${sensor.measurements.waterLevel}%, 쓰레기량 ${sensor.measurements.debrisLevel}%`,
       timestamp: new Date(Date.now() - Math.random() * 1800000), // 최근 30분 내
@@ -144,7 +144,7 @@ export function generateAlerts(sensorData: SensorData[]) {
   warningSensors.slice(0, 3).forEach((sensor, index) => {
     alerts.push({
       id: `alert-warning-${index + 1}`,
-      level: 'medium',
+      severity: 'medium',
       location: sensor.location.name,
       message: `주의: 수위 상승 감지 - 수위 ${sensor.measurements.waterLevel}%, 점검 필요`,
       timestamp: new Date(Date.now() - Math.random() * 3600000), // 최근 1시간 내
@@ -155,7 +155,7 @@ export function generateAlerts(sensorData: SensorData[]) {
   if (alerts.length < 3) {
     alerts.push({
       id: 'alert-info-1',
-      level: 'low',
+      severity: 'low',
       location: '시스템',
       message: `정상 작동 중 - 모니터링 중인 센서 ${sensorData.length}개`,
       timestamp: new Date(Date.now() - Math.random() * 7200000), // 최근 2시간 내

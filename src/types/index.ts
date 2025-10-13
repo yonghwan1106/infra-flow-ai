@@ -63,3 +63,12 @@ export interface DashboardStats {
   todayTasks: number;
   completedTasks: number;
 }
+
+// 알림 인터페이스
+export interface Alert {
+  id: string;
+  location: string;
+  message: string;
+  severity: 'high' | 'medium' | 'low';
+  timestamp: Date;
+}
