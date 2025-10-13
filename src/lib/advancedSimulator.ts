@@ -318,10 +318,10 @@ export function generateAdvancedSensorData(
     // 예측 위험도
     const predictedRisk = predictFutureRisk(currentRisk, weatherRainfall, trend);
 
-    // 상태 결정
+    // 상태 결정 (더 엄격한 기준)
     let status: 'normal' | 'warning' | 'critical';
-    if (currentRisk >= 75) status = 'critical';
-    else if (currentRisk >= 50) status = 'warning';
+    if (currentRisk >= 85) status = 'critical';
+    else if (currentRisk >= 65) status = 'warning';
     else status = 'normal';
 
     // 위험 요인 분석
@@ -363,36 +363,38 @@ export function generateAdvancedSensorData(
   // 위험도 순으로 정렬
   sensors.sort((a, b) => b.riskAnalysis.currentRisk - a.riskAnalysis.currentRisk);
 
-  // 최소 위험/주의 상태 보장 (현실적인 시뮬레이션을 위해)
-  const criticalCount = sensors.filter(s => s.status === 'critical').length;
-  const warningCount = sensors.filter(s => s.status === 'warning').length;
+  // 위험/주의 상태 조정 (현실적인 시뮬레이션을 위해)
+  let criticalCount = sensors.filter(s => s.status === 'critical').length;
+  let warningCount = sensors.filter(s => s.status === 'warning').length;
 
-  // 위험 상태가 5개 미만이면 위험도 높은 센서들을 critical로 변경
-  if (criticalCount < 5) {
-    const needCount = 5 - criticalCount;
-    const candidates = sensors.filter(s => s.status !== 'critical');
-
-    for (let i = 0; i < Math.min(needCount, candidates.length); i++) {
-      candidates[i].status = 'critical';
-      // 위험도도 critical 범위로 조정
-      if (candidates[i].riskAnalysis.currentRisk < 75) {
-        candidates[i].riskAnalysis.currentRisk = 75 + Math.floor(Math.random() * 20);
-      }
-    }
+  // 위험 상태가 너무 많으면 일부를 warning으로 변경
+  if (criticalCount > 15) {
+    const excessCount = criticalCount - 15;
+    const criticalSensors = sensors.filter(s => s.status === 'critical');
+    // 위험도가 낮은 critical 센서들을 warning으로 변경
+    criticalSensors
+      .sort((a, b) => a.riskAnalysis.currentRisk - b.riskAnalysis.currentRisk)
+      .slice(0, excessCount)
+      .forEach(sensor => {
+        sensor.status = 'warning';
+        sensor.riskAnalysis.currentRisk = Math.min(sensor.riskAnalysis.currentRisk, 74);
+      });
+    criticalCount = sensors.filter(s => s.status === 'critical').length;
+    warningCount = sensors.filter(s => s.status === 'warning').length;
   }
 
-  // 주의 상태가 20개 미만이면 중간 위험도 센서들을 warning으로 변경
-  if (warningCount < 20) {
-    const needCount = 20 - warningCount;
-    const candidates = sensors.filter(s => s.status === 'normal');
-
-    for (let i = 0; i < Math.min(needCount, candidates.length); i++) {
-      candidates[i].status = 'warning';
-      // 위험도도 warning 범위로 조정
-      if (candidates[i].riskAnalysis.currentRisk < 50) {
-        candidates[i].riskAnalysis.currentRisk = 50 + Math.floor(Math.random() * 20);
-      }
-    }
+  // 주의 상태가 너무 많으면 일부를 normal로 변경
+  if (warningCount > 20) {
+    const excessCount = warningCount - 20;
+    const warningSensors = sensors.filter(s => s.status === 'warning');
+    // 위험도가 낮은 warning 센서들을 normal로 변경
+    warningSensors
+      .sort((a, b) => a.riskAnalysis.currentRisk - b.riskAnalysis.currentRisk)
+      .slice(0, excessCount)
+      .forEach(sensor => {
+        sensor.status = 'normal';
+        sensor.riskAnalysis.currentRisk = Math.min(sensor.riskAnalysis.currentRisk, 49);
+      });
   }
 
   return sensors;
