@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRealtime } from '@/hooks/useRealtime';
+import { useData } from '@/contexts/DataContext';
 import {
   Activity,
   Wifi,
@@ -20,6 +21,7 @@ import {
 
 export default function RealtimeView() {
   const { data, isConnected, error, reconnect } = useRealtime();
+  const { weather } = useData(); // 공유 날씨 데이터 사용
   const [previousData, setPreviousData] = useState<{ data: { criticalCount: number; warningCount: number; completedTasks: number } } | null>(null);
   const [trends, setTrends] = useState<{
     critical: 'up' | 'down' | 'same';
@@ -180,35 +182,35 @@ export default function RealtimeView() {
             기상 정보
           </h3>
 
-          {data?.data?.weather && (
+          {weather && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center">
                   <Thermometer className="h-4 w-4 text-blue-400 mr-2" />
                   <div>
                     <p className="text-sm text-slate-400">온도</p>
-                    <p className="text-white font-semibold">{data.data.weather.temperature}°C</p>
+                    <p className="text-white font-semibold">{weather.temperature}°C</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <Droplets className="h-4 w-4 text-blue-400 mr-2" />
                   <div>
                     <p className="text-sm text-slate-400">습도</p>
-                    <p className="text-white font-semibold">{data.data.weather.humidity}%</p>
+                    <p className="text-white font-semibold">{weather.humidity}%</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <CloudRain className="h-4 w-4 text-blue-400 mr-2" />
                   <div>
                     <p className="text-sm text-slate-400">강수량</p>
-                    <p className="text-white font-semibold">{data.data.weather.rainfall}mm</p>
+                    <p className="text-white font-semibold">{weather.rainfall}mm</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <Wind className="h-4 w-4 text-blue-400 mr-2" />
                   <div>
                     <p className="text-sm text-slate-400">풍속</p>
-                    <p className="text-white font-semibold">{data.data.weather.windSpeed}m/s</p>
+                    <p className="text-white font-semibold">{weather.windSpeed}m/s</p>
                   </div>
                 </div>
               </div>
@@ -216,7 +218,7 @@ export default function RealtimeView() {
               <div>
                 <p className="text-sm text-slate-400 mb-2">6시간 강수 예보</p>
                 <div className="space-y-2">
-                  {data.data.weather.forecast.slice(0, 3).map((forecast, index) => (
+                  {weather.forecast.slice(0, 3).map((forecast, index) => (
                     <div key={index} className="flex justify-between text-sm">
                       <span className="text-slate-300">{forecast.time}</span>
                       <span className="text-white">{forecast.rainfall}mm</span>

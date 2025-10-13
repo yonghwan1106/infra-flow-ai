@@ -13,21 +13,16 @@ export async function GET(request: NextRequest) {
 
   // 실시간 데이터 스트림 생성
   const stream = new ReadableStream({
-    start(controller) {
+    async start(controller) {
       // 클라이언트 연결 확인 메시지
       controller.enqueue(`data: ${JSON.stringify({ type: 'connected', message: '실시간 연결됨' })}\n\n`);
 
-      // 초기 날씨 데이터 (비동기로 가져오기)
-      let currentWeather: Awaited<ReturnType<typeof generateWeatherData>>;
-      generateWeatherData().then(w => { currentWeather = w; });
+      // 초기 날씨 데이터를 먼저 동기적으로 가져오기
+      let currentWeather = await generateWeatherData();
 
       // 주기적으로 데이터 전송 (3초마다)
       const interval = setInterval(async () => {
         try {
-          // 날씨 데이터가 아직 없으면 기다림
-          if (!currentWeather) {
-            currentWeather = await generateWeatherData();
-          }
 
           // 새로운 센서 데이터 생성 (날씨 연동)
           const sensorData = generateSensorData(1247, currentWeather.rainfall);

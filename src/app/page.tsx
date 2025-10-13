@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { DataProvider, useData } from '@/contexts/DataContext';
 import Layout from '@/components/layout/Layout';
 import StatusCard from '@/components/dashboard/StatusCard';
 import AlertPanel from '@/components/dashboard/AlertPanel';
@@ -12,14 +13,6 @@ import AlertsView from '@/components/dashboard/AlertsView';
 import SettingsView from '@/components/dashboard/SettingsView';
 import AboutView from '@/components/dashboard/AboutView';
 import {
-  generateSensorData,
-  generateMaintenanceTasks,
-  generateWeatherData,
-  generateDashboardStats,
-  generateAlerts
-} from '@/lib/mockData';
-import { SensorData, MaintenanceTask, WeatherData, DashboardStats } from '@/types';
-import {
   Monitor,
   AlertTriangle,
   CheckCircle,
@@ -30,61 +23,13 @@ import {
   Droplets
 } from 'lucide-react';
 
-export default function Home() {
+function HomeContent() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [sensorData, setSensorData] = useState<SensorData[]>([]);
-  const [tasks, setTasks] = useState<MaintenanceTask[]>([]);
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [alerts, setAlerts] = useState<{ id: string; level: string; message: string; timestamp: Date; location: string }[]>([]);
-  const [mounted, setMounted] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
-
-  useEffect(() => {
-    setMounted(true);
-
-    let currentWeather: WeatherData | null = null;
-
-    // 초기 데이터 생성
-    const initializeData = async () => {
-      const weatherData = await generateWeatherData();
-      currentWeather = weatherData;
-      const sensors = generateSensorData(1247, weatherData.rainfall);
-      const maintenanceTasks = generateMaintenanceTasks(sensors);
-      const dashboardStats = generateDashboardStats(sensors, maintenanceTasks);
-      const alertData = generateAlerts(sensors);
-
-      setSensorData(sensors);
-      setTasks(maintenanceTasks);
-      setWeather(weatherData);
-      setStats(dashboardStats);
-      setAlerts(alertData);
-    };
-
-    initializeData();
-
-    // 실시간 업데이트 시뮬레이션 (5초마다)
-    const interval = setInterval(() => {
-      // 로컬 변수의 날씨 데이터 사용 (state 의존성 제거)
-      const currentRainfall = currentWeather?.rainfall || 0;
-      const updatedSensors = generateSensorData(1247, currentRainfall);
-      const updatedTasks = generateMaintenanceTasks(updatedSensors);
-      const updatedStats = generateDashboardStats(updatedSensors, updatedTasks);
-      const updatedAlerts = generateAlerts(updatedSensors);
-
-      setSensorData(updatedSensors);
-      setTasks(updatedTasks);
-      setStats(updatedStats);
-      setAlerts(updatedAlerts);
-      setLastUpdate(new Date());
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []); // 의존성 배열 비움 - 한 번만 실행
+  const { sensorData, tasks, weather, stats, alerts, lastUpdate, isLoading } = useData();
 
   // 컨텐츠 렌더링 함수
   const renderContent = () => {
-    if (!stats || !weather) {
+    if (isLoading || !stats || !weather) {
       return (
         <div className="flex items-center justify-center h-64">
           <div className="text-white">데이터 로딩 중...</div>
@@ -118,7 +63,7 @@ export default function Home() {
               업데이트 주기: 5초
             </div>
             <div className="text-sm text-slate-400">
-              마지막 업데이트: {mounted ? lastUpdate.toLocaleTimeString('ko-KR') : '--:--:--'}
+              마지막 업데이트: {lastUpdate.toLocaleTimeString('ko-KR')}
             </div>
           </div>
         </div>
@@ -318,5 +263,13 @@ export default function Home() {
     <Layout activeTab={activeTab} onTabChange={setActiveTab}>
       {renderContent()}
     </Layout>
+  );
+}
+
+export default function Home() {
+  return (
+    <DataProvider>
+      <HomeContent />
+    </DataProvider>
   );
 }
