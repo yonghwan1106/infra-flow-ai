@@ -2,16 +2,11 @@
 let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 const totalSlides = slides.length;
-let timerInterval = null;
-let totalSeconds = 600; // 10분
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
     // 슬라이드 카운터 업데이트
     document.getElementById('total-slides').textContent = totalSlides;
-
-    // 타이머 시작
-    startTimer();
 
     // 첫 슬라이드 애니메이션
     showSlide(0);
@@ -107,36 +102,6 @@ function goToSlide(index) {
     }
 }
 
-// 타이머
-function startTimer() {
-    updateTimerDisplay();
-
-    timerInterval = setInterval(() => {
-        if (totalSeconds > 0) {
-            totalSeconds--;
-            updateTimerDisplay();
-
-            // 시간이 1분 남았을 때 경고
-            if (totalSeconds === 60) {
-                document.querySelector('.timer').style.border = '2px solid #ef4444';
-                document.querySelector('.timer').style.color = '#ef4444';
-            }
-
-            // 시간이 다 되었을 때
-            if (totalSeconds === 0) {
-                document.querySelector('.timer').textContent = '시간 종료!';
-                clearInterval(timerInterval);
-            }
-        }
-    }, 1000);
-}
-
-function updateTimerDisplay() {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    document.getElementById('timer-display').textContent = display;
-}
 
 // 애니메이션 트리거
 function triggerAnimations() {
@@ -235,17 +200,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 타이머 리셋 (R 키)
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'r' || e.key === 'R') {
-        e.preventDefault();
-        totalSeconds = 600;
-        clearInterval(timerInterval);
-        document.querySelector('.timer').style.border = '2px solid #3b82f6';
-        document.querySelector('.timer').style.color = '#60a5fa';
-        startTimer();
-    }
-});
 
 // 콘솔에 단축키 안내
 console.log(`
@@ -256,7 +210,6 @@ console.log(`
 Home : 첫 슬라이드로
 End : 마지막 슬라이드로
 F : 전체 화면 전환
-R : 타이머 리셋 (10분)
 ====================================
 `);
 
