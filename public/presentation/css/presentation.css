@@ -895,11 +895,11 @@ h2 {
 /* 슬라이드 13: 실현가능성 */
 .tech-feasibility {
     max-width: 900px;
-    margin: 2rem auto;
+    margin: 1.5rem auto;
 }
 
 .tech-item {
-    margin: 2rem 0;
+    margin: 1.5rem 0;
 }
 
 .tech-name {
@@ -937,7 +937,8 @@ h2 {
     text-align: center;
     font-size: 2.2rem;
     color: #fbbf24;
-    margin-top: 4rem;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
     padding: 2rem;
     background: rgba(251, 191, 36, 0.1);
     border-radius: 12px;
